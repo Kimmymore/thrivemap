@@ -160,7 +160,7 @@ function personSummary(person) {
   return `${gender} · ${orient} · ${race}`;
 }
 
-export default function Results({ scored, persons, weights, equaldexStatus, onBack, onReset }) {
+export default function Results({ scored, persons, weights, equaldexStatus, healthcareStatus, safetyStatus, onBack, onReset }) {
   const [expanded, setExpanded] = useState(null);
   const [filter, setFilter] = useState('');
   const [showLegend, setShowLegend] = useState(false);
@@ -236,8 +236,12 @@ export default function Results({ scored, persons, weights, equaldexStatus, onBa
           </div>
           <p className="legend-note">
             Scores reflect averages and published indices. Individual experiences vary.
-            LGBTQ+ data sourced from <a href="https://equaldex.com" target="_blank" rel="noreferrer">Equaldex</a>
-            {equaldexStatus === 'ok' ? ' (live data)' : ' (built-in data)'}.
+            {' '}LGBTQ+ from <a href="https://equaldex.com" target="_blank" rel="noreferrer">Equaldex</a>
+            {equaldexStatus === 'ok' ? ' (live)' : ' (built-in)'}.
+            {' '}Healthcare from <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer">WHO GHO</a>
+            {healthcareStatus === 'ok' ? ' (live)' : ' (built-in)'}.
+            {' '}Safety from <a href="https://data.worldbank.org/indicator/PV.EST" target="_blank" rel="noreferrer">World Bank</a>
+            {safetyStatus === 'ok' ? ' (live)' : ' (built-in)'}.
           </p>
           <div className="legend-dimensions">
             {DIMENSIONS.map(d => (

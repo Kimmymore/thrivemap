@@ -1,0 +1,52 @@
+name: Update external scores (GPI + Rainbow Map)
+
+# Runs automatically every year in early July, after both annual releases.
+# GPI is published in June by the Institute for Economics & Peace.
+# Rainbow Map is published in May by ILGA-Europe.
+# Can also be triggered manually from the Actions tab at any time.
+#
+# On success, commits updated scores directly to main and lets the
+# existing deploy workflow handle the rebuild and publish to GitHub Pages.
+
+on:
+  schedule:
+    - cron: "0 8 1 7 *"   # 08:00 UTC on 1 July every year
+  workflow_dispatch:       # manual trigger
+
+jobs:
+  update-scores:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests openpyxl pandas beautifulsoup4 lxml
+
+      - name: Run score updater
+        run: python3 scripts/update_external_scores.py
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add src/data/external-scores.json
+
+          # Only commit if there is actually something staged
+          if git diff --cached --quiet; then
+            echo "No changes to external-scores.json — sources may not have updated yet."
+          else
+            YEAR=$(date +%Y)
+            git commit -m "data: update GPI + Rainbow Map scores ${YEAR}"
+            git push
+            echo "Committed and pushed updated scores for ${YEAR}."
+          fi

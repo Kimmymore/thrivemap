@@ -5,8 +5,45 @@
  * the user's profile and preference weights.
  */
 
+import externalScores from './external-scores.json';
+
 const EQUALDEX_API = 'https://www.equaldex.com/api/regions';
 const EQUALDEX_API_KEY = import.meta.env.VITE_EQUALDEX_API_KEY;
+
+const WB_API_BASE = 'https://api.worldbank.org/v2/country/all/indicator';
+const WHO_GHO_BASE = 'https://ghoapi.azureedge.net/api';
+
+/**
+ * ISO 3166-1 alpha-2 → alpha-3 code mapping.
+ * Used to match our country codes against WHO and World Bank API responses.
+ */
+const ISO2_TO_ISO3 = {
+  IS: 'ISL', NO: 'NOR', SE: 'SWE', FI: 'FIN', DK: 'DNK',
+  EE: 'EST', LV: 'LVA', LT: 'LTU',
+  NL: 'NLD', BE: 'BEL', DE: 'DEU', AT: 'AUT', CH: 'CHE',
+  LU: 'LUX', FR: 'FRA', IE: 'IRL', GB: 'GBR',
+  PT: 'PRT', ES: 'ESP', IT: 'ITA', GR: 'GRC', MT: 'MLT',
+  CY: 'CYP', AD: 'AND', SM: 'SMR',
+  CZ: 'CZE', SI: 'SVN', SK: 'SVK', PL: 'POL', HU: 'HUN',
+  RO: 'ROU', BG: 'BGR', RS: 'SRB', HR: 'HRV', AL: 'ALB',
+  ME: 'MNE', MK: 'MKD', UA: 'UKR',
+  CA: 'CAN', US: 'USA', MX: 'MEX',
+  CR: 'CRI', CU: 'CUB', BB: 'BRB', BZ: 'BLZ',
+  AR: 'ARG', UY: 'URY', CL: 'CHL', BR: 'BRA', CO: 'COL',
+  EC: 'ECU', PE: 'PER', BO: 'BOL', SR: 'SUR',
+  AU: 'AUS', NZ: 'NZL', FJ: 'FJI',
+  JP: 'JPN', KR: 'KOR', TW: 'TWN', CN: 'CHN',
+  TH: 'THA', VN: 'VNM', PH: 'PHL', KH: 'KHM',
+  SG: 'SGP', LA: 'LAO',
+  IN: 'IND', NP: 'NPL',
+  IL: 'ISR',
+  ZA: 'ZAF', BW: 'BWA', NA: 'NAM', CV: 'CPV',
+  SC: 'SYC', MZ: 'MOZ', AO: 'AGO',
+};
+
+const ISO3_TO_ISO2 = Object.fromEntries(
+  Object.entries(ISO2_TO_ISO3).map(([k, v]) => [v, k])
+);
 
 /**
  * Fetch the latest LGBTQ data from Equaldex API.
@@ -210,6 +247,130 @@ export function suggestWeights(persons) {
   }
 
   return weights;
+}
+
+/**
+ * Fetch the UHC Service Coverage Index from WHO Global Health Observatory.
+ * Returns a map of { iso2: healthcareScore (0–100) } or null on failure.
+ * Source: https://www.who.int/data/gho/indicator-metadata-registry/imr-details/4834
+ */
+export async function fetchWHOHealthcare() {
+  try {
+    const url = `${WHO_GHO_BASE}/UHC_INDEX_REPORTED_WHO?$orderby=TimeDim desc`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+
+    const records = json.value || [];
+    const map = {};
+    // Records ordered newest first; keep the first (most recent) value per country
+    for (const rec of records) {
+      const iso3 = rec.SpatialDim;
+      const iso2 = ISO3_TO_ISO2[iso3];
+      if (!iso2 || map[iso2] !== undefined) continue;
+      if (rec.NumericValue != null) {
+        // UHC index is already 0–100
+        map[iso2] = Math.round(rec.NumericValue);
+      }
+    }
+    return Object.keys(map).length > 0 ? map : null;
+  } catch (e) {
+    console.warn('WHO GHO API unavailable, using built-in healthcare data.', e.message);
+    return null;
+  }
+}
+
+/**
+ * Merge WHO live healthcare data into the country list.
+ */
+export function mergeHealthcareData(countries, healthMap) {
+  if (!healthMap) return countries;
+  return countries.map(c => {
+    const live = healthMap[c.code];
+    return live != null ? { ...c, healthcare: live } : c;
+  });
+}
+
+/**
+ * Fetch the Political Stability and Absence of Violence index from the World Bank.
+ * Indicator: PV.EST — sourced from the Worldwide Governance Indicators project.
+ * Returns a map of { iso2: safetyScore (0–100) } or null on failure.
+ * Source: https://data.worldbank.org/indicator/PV.EST
+ */
+export async function fetchWorldBankSafety() {
+  try {
+    const url = `${WB_API_BASE}/PV.EST?format=json&mrv=1&per_page=350`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+
+    const records = Array.isArray(json) && json[1] ? json[1] : [];
+    const map = {};
+    for (const rec of records) {
+      if (rec.value == null) continue;
+      const iso2 = ISO3_TO_ISO2[rec.countryiso3code];
+      if (!iso2) continue;
+      // PV.EST ranges roughly −3.0 to +2.5; map to 0–100
+      map[iso2] = Math.round(Math.max(0, Math.min(100, (rec.value + 3.0) / 5.5 * 100)));
+    }
+    return Object.keys(map).length > 0 ? map : null;
+  } catch (e) {
+    console.warn('World Bank API unavailable, using built-in safety data.', e.message);
+    return null;
+  }
+}
+
+/**
+ * Merge World Bank live safety data into the country list.
+ */
+export function mergeSafetyData(countries, safetyMap) {
+  if (!safetyMap) return countries;
+  return countries.map(c => {
+    const live = safetyMap[c.code];
+    return live != null ? { ...c, safety: live } : c;
+  });
+}
+
+/**
+ * Apply bundled GPI and Rainbow Map scores from external-scores.json.
+ *
+ * This file is updated automatically each July by the GitHub Actions workflow
+ * update-external-scores.yml and is baked into the bundle at build time.
+ *
+ * - GPI (Global Peace Index) blends with the live World Bank safety score.
+ *   Both measure peace/stability from different angles; blending the two
+ *   gives a more rounded picture.
+ * - Rainbow Map (ILGA-Europe) updates the overall Equaldex Index (ei) for
+ *   European countries. It is the most authoritative European LGBTQ legal
+ *   index and is used in place of Equaldex where both are available.
+ *
+ * Call this once, after mergeEqualdexData, mergeHealthcareData, and
+ * mergeSafetyData have already been applied.
+ */
+export function mergeExternalScores(countries) {
+  const gpi     = externalScores?.gpi     || {};
+  const rainbow = externalScores?.rainbow || {};
+
+  return countries.map(c => {
+    let updated = c;
+
+    // GPI → blend with existing safety score (50/50)
+    const gpiScore = gpi[c.code];
+    if (gpiScore != null) {
+      updated = {
+        ...updated,
+        safety: Math.round((gpiScore + updated.safety) / 2),
+      };
+    }
+
+    // Rainbow Map → override ei for European countries
+    const rainbowScore = rainbow[c.code];
+    if (rainbowScore != null) {
+      updated = { ...updated, ei: rainbowScore };
+    }
+
+    return updated;
+  });
 }
 
 /**

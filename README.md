@@ -31,19 +31,40 @@ Countries are scored and ranked from best fit to worst. You can expand any count
 
 ## What is scored
 
-| Dimension | What it measures | Source |
+| Dimension | What it measures | Primary source |
 |---|---|---|
-| **Climate** | How well the country's typical climate matches your temperature and sunshine preferences | National met offices, Wikipedia |
-| **LGBTQ+ Legal: Orientation** | Same-sex partnerships, marriage, adoption, anti-discrimination law | [Equaldex](https://equaldex.com) |
-| **LGBTQ+ Legal: Gender Identity** | Legal gender recognition, trans healthcare access, non-binary recognition | [ILGA World](https://ilga.org), [TGEU](https://tgeu.org) |
-| **LGBTQ+ Social Acceptance** | How accepted LGBTQ+ people are in daily life, public attitude surveys | [Equaldex](https://equaldex.com), Pew Research |
-| **Racial Experience** | Reported social comfort and safety for your racial background | US State Dept. Human Rights Reports, ECRI, FRA |
-| **Safety** | Crime rates, violent crime, political stability | [Global Peace Index](https://visionofhumanity.org) |
-| **Healthcare** | Quality of and access to public healthcare | WHO, [Numbeo](https://numbeo.com) |
-| **Cost / Value** | Quality of life relative to cost of living | [Numbeo](https://numbeo.com), Expatistan |
-| **Visa / Residency** | Ease of legally relocating, digital nomad and residency options | Visaguide.world, official immigration portals |
+| **Climate** | How well the country's typical climate matches your temperature and sunshine preferences | National met offices |
+| **LGBTQ+ Legal: Orientation** | Same-sex partnerships, marriage, adoption, anti-discrimination law | [Equaldex](https://equaldex.com) · [ILGA-Europe Rainbow Map](https://rainbowmap.ilga-europe.org) |
+| **LGBTQ+ Legal: Gender Identity** | Legal gender recognition, trans healthcare access, non-binary recognition | [ILGA World](https://ilga.org) · [TGEU](https://tgeu.org) |
+| **LGBTQ+ Social Acceptance** | How accepted LGBTQ+ people are in daily life, public attitude surveys | [Equaldex](https://equaldex.com) · Pew Research |
+| **Racial Experience** | Reported social comfort and safety for your racial background | US State Dept. Human Rights Reports · ECRI · FRA |
+| **Safety** | Political stability, violent crime, and militarisation | [World Bank](https://data.worldbank.org/indicator/PV.EST) · [Global Peace Index](https://visionofhumanity.org) |
+| **Healthcare** | Quality of and access to public healthcare | [WHO Global Health Observatory](https://www.who.int/data/gho) |
+| **Cost / Value** | Quality of life relative to cost of living | Numbeo · Expatistan |
+| **Visa / Residency** | Ease of legally relocating, digital nomad and residency options | Visaguide.world · official immigration portals |
 
-LGBTQ+ legal and social data is fetched live from the [Equaldex API](https://equaldex.com) on every visit when available, falling back to built-in data otherwise.
+---
+
+## How data is kept up to date
+
+ThriveMap uses a layered data strategy. Scores are never just a static snapshot — they are updated automatically from multiple sources on different cadences.
+
+### On every visit — live API calls
+Three APIs are called in parallel each time the app loads:
+
+- **[Equaldex](https://equaldex.com/api)** — LGBTQ+ legal rights and social acceptance scores for all countries. Updated continuously by Equaldex as laws change.
+- **[WHO Global Health Observatory](https://ghoapi.azureedge.net/api/UHC_INDEX_REPORTED_WHO)** — UHC Service Coverage Index, the WHO's measure of universal healthcare access. Updated annually by the WHO.
+- **[World Bank](https://data.worldbank.org/indicator/PV.EST)** — Political Stability and Absence of Violence index. Updated annually from the Worldwide Governance Indicators project.
+
+If any live call fails, the app falls back to the built-in dataset silently. The footer shows a live or built-in indicator for each source so you can always see what you're looking at.
+
+### Every July — automated annual update
+Two sources publish data annually that cannot be fetched as a live API. A GitHub Actions workflow runs automatically on 1 July each year and handles both:
+
+- **[Global Peace Index](https://visionofhumanity.org/resources/)** (Institute for Economics & Peace, published June) — a broad measure of peacefulness covering crime, conflict, and militarisation. Blended 50/50 with the World Bank political stability score to produce the Safety dimension.
+- **[ILGA-Europe Rainbow Map](https://rainbowmap.ilga-europe.org)** (published May) — the most authoritative annual ranking of LGBTQ+ legal and policy equality across Europe. Used to update the LGBTQ+ legal score for all European countries covered by the map.
+
+The workflow downloads both sources, normalises them to ThriveMap's 0–100 scale, writes the result to `src/data/external-scores.json`, commits directly to `main`, and triggers a full rebuild and redeploy to GitHub Pages — all without any manual steps. The automation lives in `.github/workflows/update-external-scores.yml` and can also be triggered manually from the Actions tab at any time.
 
 ---
 
@@ -82,8 +103,10 @@ Country-specific explanations (shown when you click a score card) are being adde
 
 - [React 19](https://react.dev) + [Vite 8](https://vite.dev)
 - Pure CSS (no framework)
-- [Equaldex API](https://equaldex.com/api) for live LGBTQ+ data
-- GitHub Actions for CI/CD
+- [Equaldex API](https://equaldex.com/api) — live LGBTQ+ data
+- [WHO GHO API](https://www.who.int/data/gho) — live healthcare data
+- [World Bank API](https://data.worldbank.org) — live safety data
+- GitHub Actions for CI/CD and annual data updates
 - GitHub Pages for hosting
 
 ---

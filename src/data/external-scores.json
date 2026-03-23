@@ -1,0 +1,10 @@
+{
+  "_meta": {
+    "generated": "placeholder",
+    "gpi_count": 0,
+    "rainbow_count": 0,
+    "note": "Populated automatically each July by .github/workflows/update-external-scores.yml"
+  },
+  "gpi": {},
+  "rainbow": {}
+}
