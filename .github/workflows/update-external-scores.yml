@@ -33,6 +33,8 @@ jobs:
 
       - name: Run score updater
         run: python3 scripts/update_external_scores.py
+        env:
+          EQUALDEX_API_KEY: ${{ secrets.EQUALDEX_API_KEY }}
 
       - name: Commit and push if data changed
         run: |

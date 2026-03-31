@@ -4,9 +4,11 @@
     "gpi_count": 0,
     "rainbow_count": 0,
     "healthcare_count": 0,
-    "note": "Populated automatically each July by .github/workflows/update-external-scores.yml"
+    "note": "Populated automatically each July by .github/workflows/update-external-scores.yml",
+    "equaldex_count": 0
   },
   "gpi": {},
   "rainbow": {},
-  "healthcare": {}
+  "healthcare": {},
+  "equaldex": {}
 }

@@ -15,6 +15,7 @@ Dependencies: pip install requests openpyxl pandas beautifulsoup4 lxml
 import io
 import json
 import logging
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -371,7 +372,55 @@ def fetch_who_healthcare() -> dict[str, int] | None:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 4. Write output
+# 4. Equaldex — LGBTQ+ Equality Index
+# ─────────────────────────────────────────────────────────────────────────────
+
+def fetch_equaldex() -> dict:
+    """
+    Fetch LGBTQ+ Equality Index data from Equaldex for all tracked countries.
+    Uses the per-country endpoint: GET /api/region/{iso2_lower}?apiKey=KEY
+
+    The API key must be set via the EQUALDEX_API_KEY environment variable.
+    This runs server-side in GitHub Actions so the key never enters the browser bundle.
+
+    Returns { iso2: { ei, lgbtq_orient, lgbtq_social } } or {} on failure.
+    Response fields: ei (overall), ei_legal (orientation), ei_po (social acceptance).
+    """
+    api_key = os.environ.get("EQUALDEX_API_KEY", "")
+    if not api_key:
+        log.warning("Equaldex: EQUALDEX_API_KEY not set — skipping.")
+        return {}
+
+    iso2_codes = sorted(set(ISO3_TO_ISO2.values()))
+    result = {}
+
+    for code in iso2_codes:
+        url = f"https://www.equaldex.com/api/region/{code.lower()}?apiKey={api_key}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            if resp.status_code == 200:
+                data = resp.json()
+                region = data.get("region") or data
+                ei         = region.get("ei")
+                lgbtq_orient = region.get("ei_legal")
+                lgbtq_social = region.get("ei_po")
+                if any(v is not None for v in [ei, lgbtq_orient, lgbtq_social]):
+                    result[code] = {
+                        "ei":           ei,
+                        "lgbtq_orient": lgbtq_orient,
+                        "lgbtq_social": lgbtq_social,
+                    }
+            else:
+                log.warning("Equaldex: %s returned HTTP %d", code, resp.status_code)
+        except requests.RequestException as e:
+            log.warning("Equaldex: %s failed: %s", code, e)
+
+    log.info("Equaldex: fetched data for %d / %d countries", len(result), len(iso2_codes))
+    return result
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. Write output
 # ─────────────────────────────────────────────────────────────────────────────
 
 def main():
@@ -385,30 +434,36 @@ def main():
     log.info("Fetching WHO GHO UHC Service Coverage Index...")
     healthcare = fetch_who_healthcare() or {}
 
+    log.info("Fetching Equaldex LGBTQ+ Equality Index...")
+    equaldex = fetch_equaldex() or {}
+
     output = {
         "_meta": {
             "generated":        datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
             "gpi_count":        len(gpi),
             "rainbow_count":    len(rainbow),
             "healthcare_count": len(healthcare),
+            "equaldex_count":   len(equaldex),
             "note": (
                 "gpi scores are 0–100 (100 = most peaceful), "
                 "normalised from raw GPI (1.0–3.5 scale, lower = more peaceful). "
                 "rainbow scores are 0–100 Rainbow Index percentage from ILGA-Europe. "
-                "healthcare scores are the WHO UHC Service Coverage Index (0–100)."
+                "healthcare scores are the WHO UHC Service Coverage Index (0–100). "
+                "equaldex values are the Equaldex EI, ei_legal, and ei_po fields."
             ),
         },
         "gpi":        gpi,
         "rainbow":    rainbow,
         "healthcare": healthcare,
+        "equaldex":   equaldex,
     }
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n")
     log.info("Written to %s", OUT_PATH)
     log.info(
-        "GPI: %d countries, Rainbow: %d countries, Healthcare: %d countries",
-        len(gpi), len(rainbow), len(healthcare),
+        "GPI: %d, Rainbow: %d, Healthcare: %d, Equaldex: %d countries",
+        len(gpi), len(rainbow), len(healthcare), len(equaldex),
     )
 
     if not gpi and not rainbow and not healthcare:

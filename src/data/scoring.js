@@ -7,9 +7,6 @@
 
 import externalScores from './external-scores.json';
 
-const EQUALDEX_API_REGION = 'https://www.equaldex.com/api/region';
-const EQUALDEX_API_KEY = import.meta.env.VITE_EQUALDEX_API_KEY;
-
 const WB_API_BASE = 'https://api.worldbank.org/v2/country/all/indicator';
 
 /**
@@ -44,68 +41,7 @@ const ISO3_TO_ISO2 = Object.fromEntries(
   Object.entries(ISO2_TO_ISO3).map(([k, v]) => [v, k])
 );
 
-/**
- * Fetch the latest LGBTQ data from Equaldex API.
- * Returns a map of { region_id -> { lgbtq_orient, lgbtq_social } }
- * or null on failure.
- */
-export async function fetchEqualdexData() {
-  if (!EQUALDEX_API_KEY) {
-    console.warn('Equaldex API key not configured.');
-    return null;
-  }
 
-  const codes = Object.keys(ISO2_TO_ISO3);
-
-  try {
-    const results = await Promise.allSettled(
-      codes.map(async (code) => {
-        const url = `${EQUALDEX_API_REGION}/${code.toLowerCase()}?apiKey=${EQUALDEX_API_KEY}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`HTTP ${res.status} for ${code}`);
-        const json = await res.json();
-        return { code, json };
-      })
-    );
-
-    const map = {};
-    for (const result of results) {
-      if (result.status === 'rejected') continue;
-      const { code, json } = result.value;
-      // Equaldex single-region response: { region: { ei, ei_legal, ei_po, ... } }
-      const region = json.region ?? json;
-      if (!region) continue;
-      map[code] = {
-        ei:           region.ei       ?? null,
-        lgbtq_orient: region.ei_legal ?? null,
-        lgbtq_social: region.ei_po    ?? null,
-      };
-    }
-
-    return Object.keys(map).length > 0 ? map : null;
-  } catch (e) {
-    console.warn('Equaldex API unavailable, using built-in data.', e.message);
-    return null;
-  }
-}
-
-/**
- * Merge live Equaldex data into the country list.
- * Only overwrites lgbtq_orient / lgbtq_social; keeps everything else.
- */
-export function mergeEqualdexData(countries, equaldexMap) {
-  if (!equaldexMap) return countries;
-  return countries.map(c => {
-    const live = equaldexMap[c.code];
-    if (!live) return c;
-    return {
-      ...c,
-      ei:           live.ei           ?? c.ei,
-      lgbtq_orient: live.lgbtq_orient ?? c.lgbtq_orient,
-      lgbtq_social: live.lgbtq_social ?? c.lgbtq_social,
-    };
-  });
-}
 
 /**
  * Determine which racial experience key to use for a person.
@@ -252,12 +188,17 @@ export function mergeSafetyData(countries, safetyMap) {
 /**
  * Apply bundled annual scores from external-scores.json.
  * Includes WHO GHO healthcare, GPI safety blend, and Rainbow Map LGBTQ index.
- * Call after mergeEqualdexData and mergeSafetyData.
+ * Call before mergeSafetyData (World Bank live data applied last).
  */
+/** True when the annual GitHub Actions job has populated Equaldex data. */
+export const equaldexAnnualAvailable =
+  Object.keys(externalScores?.equaldex || {}).length > 0;
+
 export function mergeExternalScores(countries) {
   const gpi        = externalScores?.gpi        || {};
   const rainbow    = externalScores?.rainbow    || {};
   const healthcare = externalScores?.healthcare || {};
+  const equaldex   = externalScores?.equaldex   || {};
 
   return countries.map(c => {
     let updated = c;
@@ -278,6 +219,17 @@ export function mergeExternalScores(countries) {
     const rainbowScore = rainbow[c.code];
     if (rainbowScore != null) {
       updated = { ...updated, ei: rainbowScore };
+    }
+
+    // Equaldex → override LGBTQ+ orientation and social scores
+    const eq = equaldex[c.code];
+    if (eq) {
+      updated = {
+        ...updated,
+        ei:           eq.ei           ?? updated.ei,
+        lgbtq_orient: eq.lgbtq_orient ?? updated.lgbtq_orient,
+        lgbtq_social: eq.lgbtq_social ?? updated.lgbtq_social,
+      };
     }
 
     return updated;

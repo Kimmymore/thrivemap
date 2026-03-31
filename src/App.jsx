@@ -4,15 +4,17 @@ import Preferences from './components/Preferences';
 import Results from './components/Results';
 import { COUNTRIES } from './data/countries';
 import {
-  fetchEqualdexData,
-  mergeEqualdexData,
   fetchWorldBankSafety,
   mergeSafetyData,
   mergeExternalScores,
+  equaldexAnnualAvailable,
   scoreCountry,
   suggestWeights,
   DEFAULT_WEIGHTS,
 } from './data/scoring';
+
+// Derived synchronously from the bundled JSON — no browser-side API call needed.
+const equaldexStatus = equaldexAnnualAvailable ? 'ok' : 'error';
 import './App.css';
 
 const STEPS = ['profile', 'preferences', 'results'];
@@ -30,41 +32,24 @@ export default function App() {
   const [tempPref, setTempPref] = useState(50);
 
   const [countries, setCountries] = useState(COUNTRIES);
-  const [equaldexStatus, setEqualdexStatus] = useState('idle');
   const [safetyStatus, setSafetyStatus] = useState('idle');
   const [scored, setScored] = useState([]);
 
   useEffect(() => {
-    setEqualdexStatus('loading');
     setSafetyStatus('loading');
 
-    Promise.all([
-      fetchEqualdexData(),
-      fetchWorldBankSafety(),
-    ]).then(([liveEqualdex, liveSafety]) => {
-      // Start from the original static data and layer each source on top
-      let updated = COUNTRIES;
+    // Apply bundled annual data (GPI + Rainbow Map + WHO healthcare + Equaldex) first.
+    // These are fetched each July by the GitHub Actions workflow and baked into the build.
+    // Equaldex is included here — fetched server-side so the API key never enters the bundle.
+    let updated = mergeExternalScores(COUNTRIES);
 
-      if (liveEqualdex && Object.keys(liveEqualdex).length > 0) {
-        updated = mergeEqualdexData(updated, liveEqualdex);
-        setEqualdexStatus('ok');
-      } else {
-        setEqualdexStatus('error');
-      }
-
+    fetchWorldBankSafety().then(liveSafety => {
       if (liveSafety) {
         updated = mergeSafetyData(updated, liveSafety);
         setSafetyStatus('ok');
       } else {
         setSafetyStatus('error');
       }
-
-      // Apply bundled annual data (GPI + Rainbow Map + WHO healthcare) last —
-      // these are fetched each July by the GitHub Actions workflow and baked into
-      // the build. WHO GHO is included here because its API has no CORS headers
-      // and cannot be called directly from a browser.
-      updated = mergeExternalScores(updated);
-
       setCountries(updated);
     });
   }, []);
@@ -163,7 +148,6 @@ export default function App() {
           LGBTQ+: <a href="https://equaldex.com" target="_blank" rel="noreferrer">Equaldex</a>
           {equaldexStatus === 'ok' && <span className="badge live">● live</span>}
           {equaldexStatus === 'error' && <span className="badge cached">● built-in</span>}
-          {equaldexStatus === 'loading' && <span className="badge loading-ind">● updating…</span>}
           {' · '}Healthcare: <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer">WHO GHO</a>
           <span className="badge cached">● annual</span>
           {' · '}Safety: <a href="https://data.worldbank.org/indicator/PV.EST" target="_blank" rel="noreferrer">World Bank</a>

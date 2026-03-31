@@ -1,0 +1,51 @@
+name: Update Equaldex LGBTQ+ scores (weekly)
+
+# Runs every Monday at 03:00 CET (02:00 UTC = cron 0 2 * * 1).
+# Note: cron does not adjust for DST — during CEST (summer) this fires at 04:00 CET.
+# Can also be triggered manually from the Actions tab at any time.
+#
+# On success, commits updated equaldex data to main and lets the existing
+# deploy workflow handle the rebuild and publish to GitHub Pages.
+
+on:
+  schedule:
+    - cron: "0 2 * * 1"   # 02:00 UTC Mon = 03:00 CET / 04:00 CEST
+  workflow_dispatch:
+
+jobs:
+  update-equaldex:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch Equaldex data
+        run: python3 scripts/update_equaldex.py
+        env:
+          EQUALDEX_API_KEY: ${{ secrets.EQUALDEX_API_KEY }}
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add src/data/external-scores.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to external-scores.json — Equaldex data unchanged."
+          else
+            git commit -m "data: update Equaldex LGBTQ+ scores $(date +%Y-%m-%d)"
+            git push
+            echo "Committed and pushed updated Equaldex scores."
+          fi
