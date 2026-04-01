@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DIMENSIONS } from '../data/scoring';
 import { RACIAL_GROUPS, ORIENTATION_OPTIONS, GENDER_OPTIONS } from '../data/countries';
 import { getDetail, getSources } from '../data/countryDetails';
+import { TEMP_MIN_OFF, TEMP_MAX_OFF } from '../App';
 
 function scoreColor(val) {
   if (val >= 75) return 'score-great';
@@ -46,7 +47,7 @@ function DimDetail({ countryCode, dimension, score }) {
   );
 }
 
-function CountryRow({ country, rank, persons, expanded, onToggle }) {
+function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReason }) {
   const [expandedDim, setExpandedDim] = useState(null);
   const dims = DIMENSIONS.filter(d => country.breakdown[d.key] !== undefined);
 
@@ -55,13 +56,13 @@ function CountryRow({ country, rank, persons, expanded, onToggle }) {
   };
 
   return (
-    <div className={`country-row ${rank <= 3 ? 'top-ranked' : ''}`}>
+    <div className={`country-row ${!excluded && rank <= 3 ? 'top-ranked' : ''} ${excluded ? 'country-row-excluded' : ''}`}>
       <div className="country-main" onClick={onToggle} role="button" tabIndex={0}
         onKeyDown={e => e.key === 'Enter' && onToggle()}
         aria-expanded={expanded}
       >
         <div className="country-rank">
-          {rank <= 3
+          {!excluded && rank <= 3
             ? ['🥇', '🥈', '🥉'][rank - 1]
             : <span className="rank-num">{rank}</span>
           }
@@ -97,6 +98,11 @@ function CountryRow({ country, rank, persons, expanded, onToggle }) {
 
       {expanded && (
         <div className="country-detail">
+          {exclusionReason && (
+            <div className="exclusion-reason">
+              🌡️ {exclusionReason}
+            </div>
+          )}
           {country.note && (
             <div className="country-note">ℹ️ {country.note}</div>
           )}
@@ -136,8 +142,16 @@ function CountryRow({ country, rank, persons, expanded, onToggle }) {
 
           <div className="detail-climate">
             <span>🌡️ Avg temp: <strong>{country.avg_temp_c}°C</strong></span>
+            <span>❄️ Coldest month: <strong>{country.temp_winter}°C</strong></span>
+            <span>🔆 Hottest month: <strong>{country.temp_summer}°C</strong></span>
             <span>☀️ Avg sun: <strong>{country.sun_hours}h/day</strong></span>
           </div>
+
+          {country.climate_region_note && (
+            <div className="climate-region-note">
+              🗺️ {country.climate_region_note}
+            </div>
+          )}
 
           <a
             className="equaldex-link"
@@ -160,19 +174,50 @@ function personSummary(person) {
   return `${gender} · ${orient} · ${race}`;
 }
 
-export default function Results({ scored, persons, weights, equaldexDateLabel, safetyStatus, onBack, onReset }) {
+function getExclusionReason(country, tempMin, tempMax) {
+  const reasons = [];
+  if (tempMin !== TEMP_MIN_OFF && country.temp_winter < tempMin) {
+    reasons.push(`coldest month (${country.temp_winter}°C) is below your minimum of ${tempMin}°C`);
+  }
+  if (tempMax !== TEMP_MAX_OFF && country.temp_summer > tempMax) {
+    reasons.push(`hottest month (${country.temp_summer}°C) exceeds your maximum of ${tempMax}°C`);
+  }
+  if (reasons.length === 0) return null;
+  return `Outside temperature range: ${reasons.join(' and ')}.${country.climate_region_note ? ' See regional note below.' : ''}`;
+}
+
+export default function Results({ scored, persons, weights, tempMin, tempMax, equaldexDateLabel, safetyStatus, onBack, onReset }) {
   const [expanded, setExpanded] = useState(null);
   const [filter, setFilter] = useState('');
   const [showLegend, setShowLegend] = useState(false);
 
   const toggle = (code) => setExpanded(prev => prev === code ? null : code);
 
-  const filtered = scored.filter(c =>
-    !filter || c.name.toLowerCase().includes(filter.toLowerCase()) ||
-    c.region.toLowerCase().includes(filter.toLowerCase())
-  );
+  const hasFilter = tempMin !== TEMP_MIN_OFF || tempMax !== TEMP_MAX_OFF;
 
-  const top3 = scored.slice(0, 3);
+  // Split into passing and excluded
+  const passing = scored.filter(c => {
+    const minOk = tempMin === TEMP_MIN_OFF || c.temp_winter >= tempMin;
+    const maxOk = tempMax === TEMP_MAX_OFF || c.temp_summer <= tempMax;
+    return minOk && maxOk;
+  });
+
+  const excluded = scored.filter(c => {
+    const minOk = tempMin === TEMP_MIN_OFF || c.temp_winter >= tempMin;
+    const maxOk = tempMax === TEMP_MAX_OFF || c.temp_summer <= tempMax;
+    return !(minOk && maxOk);
+  });
+
+  // Apply text search to each list
+  const matchSearch = c =>
+    !filter ||
+    c.name.toLowerCase().includes(filter.toLowerCase()) ||
+    c.region.toLowerCase().includes(filter.toLowerCase());
+
+  const filteredPassing = passing.filter(matchSearch);
+  const filteredExcluded = excluded.filter(matchSearch);
+
+  const top3 = passing.slice(0, 3);
 
   return (
     <div className="step-container results-container">
@@ -253,21 +298,60 @@ export default function Results({ scored, persons, weights, equaldexDateLabel, s
         </div>
       )}
 
+      {/* Matching countries */}
       <div className="country-list" role="list">
-        {filtered.map((c) => (
+        {filteredPassing.map((c) => (
           <CountryRow
             key={c.code}
             country={c}
-            rank={scored.indexOf(c) + 1}
-            persons={persons}
+            rank={passing.indexOf(c) + 1}
             expanded={expanded === c.code}
             onToggle={() => toggle(c.code)}
+            excluded={false}
           />
         ))}
-        {filtered.length === 0 && (
-          <p className="no-results">No countries match your search.</p>
+        {filteredPassing.length === 0 && passing.length > 0 && (
+          <p className="no-results">No matching countries for your search.</p>
+        )}
+        {passing.length === 0 && hasFilter && (
+          <p className="no-results">No countries match your temperature filters. Try widening the range.</p>
+        )}
+        {!filter && !hasFilter && filteredPassing.length === 0 && (
+          <p className="no-results">No results to show.</p>
         )}
       </div>
+
+      {/* Excluded countries */}
+      {hasFilter && excluded.length > 0 && (
+        <div className="excluded-section">
+          <div className="excluded-header">
+            <span className="excluded-header-icon">🌡️</span>
+            <div>
+              <h3 className="excluded-title">Outside your temperature range</h3>
+              <p className="excluded-subtitle">
+                {excluded.length} {excluded.length === 1 ? 'country' : 'countries'} — sorted by score, but filtered out based on your climate limits.
+                Expand any to see why and read about regional climate options.
+              </p>
+            </div>
+          </div>
+          <div className="country-list" role="list">
+            {filteredExcluded.map((c, i) => (
+              <CountryRow
+                key={c.code}
+                country={c}
+                rank={i + 1}
+                expanded={expanded === c.code}
+                onToggle={() => toggle(c.code)}
+                excluded={true}
+                exclusionReason={getExclusionReason(c, tempMin, tempMax)}
+              />
+            ))}
+            {filteredExcluded.length === 0 && (
+              <p className="no-results">No excluded countries match your search.</p>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="step-actions">
         <button className="btn-secondary" onClick={onBack}>← Adjust preferences</button>
@@ -278,9 +362,10 @@ export default function Results({ scored, persons, weights, equaldexDateLabel, s
         <p>
           <strong>Important:</strong> Scores are compiled from publicly available indices (Equaldex,
           Global Peace Index, WHO, Rainbow Europe, ILGA World, Numbeo) and are generalisations.
-          Racial experience scores reflect aggregate reported experiences and do not predict any
-          individual's life. Laws and social attitudes change — always verify current conditions
-          before making relocation decisions.
+          Temperature data represents monthly averages for representative regions — individual
+          microclimates vary. Racial experience scores reflect aggregate reported experiences and do
+          not predict any individual's life. Laws and social attitudes change — always verify current
+          conditions before making relocation decisions.
         </p>
       </div>
     </div>

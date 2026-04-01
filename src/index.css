@@ -998,3 +998,93 @@ a:hover { text-decoration: none; }
 
 /* ── App.css cleanup ─────────────────────────────────────────── */
 /* (App.css is left empty — all styles are here) */
+
+/* ── Temperature filter slider ───────────────────────────────── */
+.temp-filter-slider {
+  background: linear-gradient(
+    to right,
+    var(--primary) 0%,
+    var(--primary) var(--pct, 50%),
+    var(--border) var(--pct, 50%),
+    var(--border) 100%
+  );
+}
+
+/* ── Excluded countries section ──────────────────────────────── */
+.excluded-section {
+  margin-top: 36px;
+  margin-bottom: 24px;
+}
+
+.excluded-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--fair-bg);
+  border: 1px solid #f0dbb0;
+  border-radius: 12px 12px 0 0;
+  margin-bottom: 0;
+}
+
+.excluded-header-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
+.excluded-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fair);
+  margin-bottom: 4px;
+}
+
+.excluded-subtitle {
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.excluded-section .country-list {
+  margin-bottom: 0;
+  border-top: none;
+}
+
+.country-row-excluded {
+  opacity: 0.75;
+  border-color: #e8dfc0 !important;
+}
+
+.country-row-excluded:hover {
+  opacity: 1;
+}
+
+.country-row-excluded .country-name {
+  color: var(--text-soft);
+}
+
+/* Exclusion reason banner inside expanded detail */
+.exclusion-reason {
+  background: var(--fair-bg);
+  border: 1px solid #f0dbb0;
+  color: var(--fair);
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+/* Climate region note inside expanded detail */
+.climate-region-note {
+  background: var(--good-bg);
+  border: 1px solid #c5d9f5;
+  color: var(--good);
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 12px;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}

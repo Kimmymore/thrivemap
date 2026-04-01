@@ -1,4 +1,5 @@
 import { DIMENSIONS } from '../data/scoring';
+import { TEMP_MIN_OFF, TEMP_MAX_OFF } from '../App';
 
 const TEMP_LABELS = ['❄️ Very cold', 'Cold', 'Mild / temperate', 'Warm', '☀️ Tropical hot'];
 
@@ -33,7 +34,39 @@ function WeightSlider({ dim, value, onChange }) {
   );
 }
 
-export default function Preferences({ weights, tempPref, onWeightChange, onTempChange, onNext, onBack }) {
+function TempFilterSlider({ label, value, min, max, step, offValue, offLabel, valueLabel, onChange, desc }) {
+  const isOff = value === offValue;
+  const pct = ((value - min) / (max - min)) * 100;
+
+  return (
+    <div className="pref-row">
+      <div className="pref-row-header">
+        <span className="pref-label">{label}</span>
+        <span className={`pref-value ${isOff ? 'low' : 'high'}`}>
+          {isOff ? offLabel : valueLabel(value)}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={e => onChange(Number(e.target.value))}
+        aria-label={label}
+        className="pref-slider temp-filter-slider"
+        style={{ '--pct': `${pct}%` }}
+      />
+      <p className="pref-desc">{isOff ? desc.off : desc.on(value)}</p>
+    </div>
+  );
+}
+
+export default function Preferences({
+  weights, tempPref, tempMin, tempMax,
+  onWeightChange, onTempChange, onTempMinChange, onTempMaxChange,
+  onNext, onBack,
+}) {
   const otherDimensions = DIMENSIONS.filter(d => d.key !== 'climate');
 
   return (
@@ -73,6 +106,38 @@ export default function Preferences({ weights, tempPref, onWeightChange, onTempC
             Slide towards your ideal climate — from icy Scandinavia to year-round tropical warmth.
           </p>
         </div>
+
+        <TempFilterSlider
+          label="Minimum temperature"
+          value={tempMin}
+          min={TEMP_MIN_OFF}
+          max={35}
+          step={1}
+          offValue={TEMP_MIN_OFF}
+          offLabel="No minimum"
+          valueLabel={v => `≥ ${v}°C`}
+          onChange={onTempMinChange}
+          desc={{
+            off: 'No cold-weather limit applied. Slide right to exclude countries with cold winters.',
+            on: v => `In the warmest region, the coldest month must average at least ${v}°C. Countries that don't qualify are shown separately below your results.`,
+          }}
+        />
+
+        <TempFilterSlider
+          label="Maximum temperature"
+          value={tempMax}
+          min={15}
+          max={TEMP_MAX_OFF}
+          step={1}
+          offValue={TEMP_MAX_OFF}
+          offLabel="No maximum"
+          valueLabel={v => `≤ ${v}°C`}
+          onChange={onTempMaxChange}
+          desc={{
+            off: 'No heat limit applied. Slide left to exclude countries with hot summers.',
+            on: v => `In the coolest region, the hottest month must average no more than ${v}°C. Countries that don't qualify are shown separately below your results.`,
+          }}
+        />
 
         <div className="pref-row">
           <div className="pref-row-header">

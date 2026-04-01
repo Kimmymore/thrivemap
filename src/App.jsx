@@ -21,6 +21,10 @@ import './App.css';
 
 const STEPS = ['profile', 'preferences', 'results'];
 
+// Sentinel values: -15 = "no minimum", 50 = "no maximum"
+export const TEMP_MIN_OFF = -15;
+export const TEMP_MAX_OFF = 50;
+
 export default function App() {
   const [step, setStep] = useState('profile');
 
@@ -32,6 +36,8 @@ export default function App() {
 
   const [weights, setWeights] = useState(DEFAULT_WEIGHTS);
   const [tempPref, setTempPref] = useState(50);
+  const [tempMin, setTempMin] = useState(TEMP_MIN_OFF);
+  const [tempMax, setTempMax] = useState(TEMP_MAX_OFF);
 
   const [countries, setCountries] = useState(COUNTRIES);
   const [safetyStatus, setSafetyStatus] = useState('idle');
@@ -120,8 +126,12 @@ export default function App() {
           <Preferences
             weights={weights}
             tempPref={tempPref}
+            tempMin={tempMin}
+            tempMax={tempMax}
             onWeightChange={handleWeightChange}
             onTempChange={handleTempChange}
+            onTempMinChange={setTempMin}
+            onTempMaxChange={setTempMax}
             onNext={handlePreferencesNext}
             onBack={() => setStep('profile')}
           />
@@ -131,6 +141,8 @@ export default function App() {
             scored={scored}
             persons={persons}
             weights={weights}
+            tempMin={tempMin}
+            tempMax={tempMax}
             equaldexDateLabel={equaldexDateLabel}
             safetyStatus={safetyStatus}
             onBack={() => setStep('preferences')}
@@ -140,6 +152,8 @@ export default function App() {
               setPersons([{ gender: '', orientation: '', race: '' }]);
               setWeights(DEFAULT_WEIGHTS);
               setTempPref(50);
+              setTempMin(TEMP_MIN_OFF);
+              setTempMax(TEMP_MAX_OFF);
             }}
           />
         )}
