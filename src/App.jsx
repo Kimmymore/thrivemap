@@ -29,7 +29,7 @@ export default function App() {
   const [step, setStep] = useState('profile');
 
   const [persons, setPersons] = useState([
-    { gender: '', orientation: '', race: '' },
+    { gender: '', orientation: '', ethnicity: [] },
   ]);
 
   const [maxStep, setMaxStep] = useState(0);
@@ -97,10 +97,14 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div className="header-inner">
-          <div className="logo">
+          <button
+            className="logo logo-btn"
+            onClick={() => { setStep('profile'); setMaxStep(0); setPersons([{ gender: '', orientation: '', ethnicity: [] }]); setWeights(DEFAULT_WEIGHTS); setTempPref(50); setTempMin(TEMP_MIN_OFF); setTempMax(TEMP_MAX_OFF); }}
+            aria-label="Go to homepage"
+          >
             <span className="logo-icon">🌈</span>
             <span className="logo-text">ThriveMap</span>
-          </div>
+          </button>
           <nav className="step-nav" aria-label="Steps">
             {['Profile', 'Preferences', 'Results'].map((label, i) => (
               <button
@@ -149,7 +153,7 @@ export default function App() {
             onReset={() => {
               setStep('profile');
               setMaxStep(0);
-              setPersons([{ gender: '', orientation: '', race: '' }]);
+              setPersons([{ gender: '', orientation: '', ethnicity: [] }]);
               setWeights(DEFAULT_WEIGHTS);
               setTempPref(50);
               setTempMin(TEMP_MIN_OFF);

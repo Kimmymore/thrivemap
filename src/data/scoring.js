@@ -44,10 +44,12 @@ const ISO3_TO_ISO2 = Object.fromEntries(
 
 
 /**
- * Determine which racial experience key to use for a person.
+ * Map a single ethnicity value to the country racial scoring key.
  */
-export function racialKey(race) {
-  return race || 'white';
+import { ETHNICITY_OPTIONS } from './countries';
+
+export function ethnicityToScoringKey(value) {
+  return ETHNICITY_OPTIONS.find(o => o.value === value)?.scoringKey ?? 'white';
 }
 
 /**
@@ -62,7 +64,7 @@ export function isLgbtq(orientation) {
  * (affects gender-specific LGBTQ legal score weight)
  */
 export function isGenderDiverse(gender) {
-  return ['nonbinary', 'other'].includes(gender);
+  return ['nonbinary', 'trans_male', 'trans_female'].includes(gender);
 }
 
 /**
@@ -75,15 +77,19 @@ export function climateScore(country, tempPref) {
 }
 
 /**
- * Get racial experience score for one or two people.
- * For a couple, returns the lower of the two (most vulnerable).
+ * Get ethnicity experience score for one or two people.
+ * Uses the lowest scoring ethnicity per person (most vulnerable),
+ * then takes the minimum across all persons in the group.
  */
 export function racialScore(country, persons) {
-  const scores = persons
-    .filter(p => p.race)
-    .map(p => country.racial[racialKey(p.race)] ?? 60);
-  if (scores.length === 0) return 70;
-  return Math.min(...scores);
+  const personScores = persons
+    .filter(p => p.ethnicity && p.ethnicity.length > 0)
+    .map(p => {
+      const ethScores = p.ethnicity.map(v => country.racial[ethnicityToScoringKey(v)] ?? 60);
+      return Math.min(...ethScores);
+    });
+  if (personScores.length === 0) return 70;
+  return Math.min(...personScores);
 }
 
 export function lgbtqOrientScore(country, persons) {
@@ -138,7 +144,9 @@ export function suggestWeights(persons) {
   const weights = { ...DEFAULT_WEIGHTS };
   const anyLgbtq = persons.some(p => isLgbtq(p.orientation));
   const anyGenderDiverse = persons.some(p => isGenderDiverse(p.gender));
-  const isPoc = persons.some(p => p.race && p.race !== 'white');
+  const isPoc = persons.some(p =>
+    Array.isArray(p.ethnicity) && p.ethnicity.some(v => v !== 'white')
+  );
   const isCouple = persons.length === 2;
   if (anyLgbtq) { weights.lgbtq_orient = 80; weights.lgbtq_social = 75; }
   if (anyGenderDiverse) { weights.lgbtq_gender = 85; }

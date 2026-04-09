@@ -724,24 +724,34 @@ export const COUNTRIES = [
 /**
  * Racial group keys and their display labels.
  */
-export const RACIAL_GROUPS = {
-  white:       'White / Caucasian',
-  black:       'Black / African',
-  mixed_bw:    'Mixed Black & White',
-  asian:       'East / Southeast Asian',
-  south_asian: 'South Asian',
-  hispanic:    'Hispanic / Latino',
-  mena:        'Middle Eastern / North African',
-};
+/**
+ * Perceived ethnic categories (multi-select).
+ * Each entry maps to a scoring key in the country's racial score object.
+ */
+export const ETHNICITY_OPTIONS = [
+  { value: 'black',            label: 'Black / Afro-descendant', scoringKey: 'black'       },
+  { value: 'brown',            label: 'Brown',                   scoringKey: 'mixed_bw'    },
+  { value: 'east_asian',       label: 'East Asian',              scoringKey: 'asian'       },
+  { value: 'southeast_asian',  label: 'Southeast Asian',         scoringKey: 'asian'       },
+  { value: 'south_asian',      label: 'South Asian',             scoringKey: 'south_asian' },
+  { value: 'middle_eastern',   label: 'Middle Eastern',          scoringKey: 'mena'        },
+  { value: 'latinx',           label: 'Latinx',                  scoringKey: 'hispanic'    },
+  { value: 'indigenous',       label: 'Indigenous',              scoringKey: 'black'       },
+  { value: 'pacific_islander', label: 'Pacific Islander',        scoringKey: 'asian'       },
+  { value: 'white',            label: 'White / White Passing',   scoringKey: 'white'       },
+  { value: 'jewish',           label: 'Jewish',                  scoringKey: 'mena'        },
+  { value: 'roma',             label: 'Roma',                    scoringKey: 'black'       },
+];
 
 /**
  * Gender options
  */
 export const GENDER_OPTIONS = [
-  { value: 'male',       label: 'Male' },
-  { value: 'female',     label: 'Female' },
-  { value: 'nonbinary',  label: 'Non-binary' },
-  { value: 'other',      label: 'Other / Prefer not to say' },
+  { value: 'cis_male',     label: 'Cis male'    },
+  { value: 'cis_female',   label: 'Cis female'  },
+  { value: 'nonbinary',    label: 'Non-binary'  },
+  { value: 'trans_male',   label: 'Trans male'  },
+  { value: 'trans_female', label: 'Trans female'},
 ];
 
 /**

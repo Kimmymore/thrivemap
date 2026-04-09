@@ -79,6 +79,14 @@ export default function Preferences({
         </p>
       </div>
 
+      <div className="pref-section pref-section-how-to">
+        <p className="pref-section-note">
+          Move each slider to reflect how important this dimension is to you.
+          <strong> Off</strong> = ignore this,&nbsp;
+          <strong>High</strong> = this is a deciding factor.
+        </p>
+      </div>
+
       <div className="pref-section">
         <h3 className="pref-section-title">🌡️ Climate preferences</h3>
 
@@ -165,11 +173,6 @@ export default function Preferences({
 
       <div className="pref-section">
         <h3 className="pref-section-title">⚖️ What matters to your happiness?</h3>
-        <p className="pref-section-note">
-          Move each slider to reflect how important this dimension is to you.
-          <strong> Off</strong> = ignore this,&nbsp;
-          <strong>High</strong> = this is a deciding factor.
-        </p>
 
         {otherDimensions.map(dim => (
           <WeightSlider

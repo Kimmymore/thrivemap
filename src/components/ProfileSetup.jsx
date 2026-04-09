@@ -1,10 +1,16 @@
 import { useState } from 'react';
-import { GENDER_OPTIONS, ORIENTATION_OPTIONS, RACIAL_GROUPS } from '../data/countries';
-
-const raceOptions = Object.entries(RACIAL_GROUPS).map(([value, label]) => ({ value, label }));
+import { GENDER_OPTIONS, ORIENTATION_OPTIONS, ETHNICITY_OPTIONS } from '../data/countries';
 
 function PersonCard({ person, index, onChange }) {
   const label = index === 0 ? 'Person 1' : 'Person 2';
+
+  const toggleEthnicity = (value) => {
+    const current = person.ethnicity ?? [];
+    const next = current.includes(value)
+      ? current.filter(v => v !== value)
+      : [...current, value];
+    onChange({ ...person, ethnicity: next });
+  };
 
   return (
     <div className="person-card">
@@ -26,7 +32,7 @@ function PersonCard({ person, index, onChange }) {
       </div>
 
       <div className="field-group">
-        <label className="field-label" htmlFor={`orient-${index}`}>Sexual orientation</label>
+        <label className="field-label" htmlFor={`orient-${index}`}>Sexual preference</label>
         <select
           id={`orient-${index}`}
           className="field-select"
@@ -41,21 +47,22 @@ function PersonCard({ person, index, onChange }) {
       </div>
 
       <div className="field-group">
-        <label className="field-label" htmlFor={`race-${index}`}>Race / ethnicity</label>
-        <select
-          id={`race-${index}`}
-          className="field-select"
-          value={person.race}
-          onChange={e => onChange({ ...person, race: e.target.value })}
-        >
-          <option value="">Select…</option>
-          {raceOptions.map(o => (
-            <option key={o.value} value={o.value}>{o.label}</option>
-          ))}
-        </select>
-        <p className="field-hint">
-          Used to personalise the racial experience score for each country.
+        <span className="field-label">Perceived ethnic categories</span>
+        <p className="field-hint field-hint-top">
+          How are you likely to be perceived by others? This affects racism and colorism risk in different countries.
         </p>
+        <div className="ethnicity-checkboxes">
+          {ETHNICITY_OPTIONS.map(o => (
+            <label key={o.value} className="ethnicity-option">
+              <input
+                type="checkbox"
+                checked={(person.ethnicity ?? []).includes(o.value)}
+                onChange={() => toggleEthnicity(o.value)}
+              />
+              <span>{o.label}</span>
+            </label>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -74,13 +81,13 @@ export default function ProfileSetup({ persons, onNext }) {
 
   const setCount = (n) => {
     if (n === 1) setLocalPersons([localPersons[0]]);
-    if (n === 2) setLocalPersons([localPersons[0], localPersons[1] || { gender: '', orientation: '', race: '' }]);
+    if (n === 2) setLocalPersons([localPersons[0], localPersons[1] || { gender: '', orientation: '', ethnicity: [] }]);
   };
 
   const handleNext = () => {
-    const incomplete = localPersons.some(p => !p.gender || !p.orientation || !p.race);
+    const incomplete = localPersons.some(p => !p.gender || !p.orientation || !p.ethnicity || p.ethnicity.length === 0);
     if (incomplete) {
-      setError('Please fill in all fields for each person.');
+      setError('Please fill in all fields for each person, including at least one ethnic category.');
       return;
     }
     onNext(localPersons);

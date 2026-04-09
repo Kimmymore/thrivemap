@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DIMENSIONS } from '../data/scoring';
-import { RACIAL_GROUPS, ORIENTATION_OPTIONS, GENDER_OPTIONS } from '../data/countries';
+import { ETHNICITY_OPTIONS, ORIENTATION_OPTIONS, GENDER_OPTIONS } from '../data/countries';
 import { getDetail, getSources } from '../data/countryDetails';
 import { TEMP_MIN_OFF, TEMP_MAX_OFF } from '../App';
 
@@ -170,8 +170,10 @@ function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReas
 function personSummary(person) {
   const gender = GENDER_OPTIONS.find(o => o.value === person.gender)?.label || person.gender;
   const orient = ORIENTATION_OPTIONS.find(o => o.value === person.orientation)?.label || person.orientation;
-  const race = RACIAL_GROUPS[person.race] || person.race;
-  return `${gender} · ${orient} · ${race}`;
+  const ethnicities = (person.ethnicity ?? [])
+    .map(v => ETHNICITY_OPTIONS.find(o => o.value === v)?.label || v)
+    .join(', ');
+  return `${gender} · ${orient}${ethnicities ? ` · ${ethnicities}` : ''}`;
 }
 
 function getExclusionReason(country, tempMin, tempMax) {
