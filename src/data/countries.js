@@ -747,11 +747,11 @@ export const ETHNICITY_OPTIONS = [
  * Gender options
  */
 export const GENDER_OPTIONS = [
-  { value: 'cis_male',     label: 'Cis male'    },
-  { value: 'cis_female',   label: 'Cis female'  },
-  { value: 'nonbinary',    label: 'Non-binary'  },
-  { value: 'trans_male',   label: 'Trans male'  },
-  { value: 'trans_female', label: 'Trans female'},
+  { value: 'cis_female',   label: 'Female (cis)'  },
+  { value: 'cis_male',     label: 'Male (cis)'    },
+  { value: 'nonbinary',    label: 'Non-binary'    },
+  { value: 'trans_female', label: 'Female (trans)'},
+  { value: 'trans_male',   label: 'Male (trans)'  },
 ];
 
 /**

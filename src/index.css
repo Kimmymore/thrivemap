@@ -717,6 +717,7 @@ a:hover { text-decoration: none; }
     grid-template-columns: 36px 1fr 36px;
   }
   .country-score-col { display: none; }
+  .country-score-mobile { display: block; }
 }
 
 .country-rank {
@@ -739,6 +740,7 @@ a:hover { text-decoration: none; }
 .country-flag { font-size: 24px; flex-shrink: 0; }
 .country-name { font-size: 15px; font-weight: 600; }
 .country-region { font-size: 12px; color: var(--text-faint); }
+.country-score-mobile { display: none; margin-top: 5px; }
 
 /* Score bar */
 .score-bar-wrap {

@@ -73,6 +73,9 @@ function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReas
           <div>
             <div className="country-name">{country.name}</div>
             <div className="country-region">{country.region}</div>
+            <div className="country-score-mobile">
+              <ScoreBar value={country.total} />
+            </div>
           </div>
         </div>
 
