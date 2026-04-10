@@ -709,9 +709,9 @@ a:hover { text-decoration: none; }
   .country-main {
     grid-template-columns: 36px 1fr 36px;
   }
-  .country-mini-scores { display: none; }
-  .country-score-col { display: none; }
-  .country-score-mobile { display: block; }
+  .country-main .country-mini-scores { display: none; }
+  .country-main .country-score-col { display: none; }
+  .country-main .country-score-mobile { display: block; }
 }
 
 .country-rank {
