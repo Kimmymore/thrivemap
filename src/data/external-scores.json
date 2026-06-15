@@ -5,10 +5,397 @@
     "rainbow_count": 0,
     "healthcare_count": 0,
     "note": "Populated automatically each July by .github/workflows/update-external-scores.yml",
-    "equaldex_count": 0
+    "equaldex_count": 77,
+    "equaldex_updated": "2026-06-15T09:46:59Z"
   },
   "gpi": {},
   "rainbow": {},
   "healthcare": {},
-  "equaldex": {}
+  "equaldex": {
+    "AD": {
+      "ei": 79.89,
+      "lgbtq_orient": 85.65,
+      "lgbtq_social": 74.13
+    },
+    "AL": {
+      "ei": 47.21,
+      "lgbtq_orient": 66.67,
+      "lgbtq_social": 27.76
+    },
+    "AO": {
+      "ei": 41.8,
+      "lgbtq_orient": 48.75,
+      "lgbtq_social": 34.85
+    },
+    "AR": {
+      "ei": 73.74,
+      "lgbtq_orient": 86.65,
+      "lgbtq_social": 60.83
+    },
+    "AT": {
+      "ei": 73.34,
+      "lgbtq_orient": 86.96,
+      "lgbtq_social": 59.73
+    },
+    "AU": {
+      "ei": 77.88,
+      "lgbtq_orient": 94.53,
+      "lgbtq_social": 61.22
+    },
+    "BB": {
+      "ei": 54.61,
+      "lgbtq_orient": 38.3,
+      "lgbtq_social": 70.92
+    },
+    "BE": {
+      "ei": 77.54,
+      "lgbtq_orient": 94.38,
+      "lgbtq_social": 60.7
+    },
+    "BG": {
+      "ei": 41.69,
+      "lgbtq_orient": 56.67,
+      "lgbtq_social": 26.71
+    },
+    "BO": {
+      "ei": 62.47,
+      "lgbtq_orient": 86.52,
+      "lgbtq_social": 38.42
+    },
+    "BR": {
+      "ei": 74.66,
+      "lgbtq_orient": 93.23,
+      "lgbtq_social": 56.09
+    },
+    "BW": {
+      "ei": 55.89,
+      "lgbtq_orient": 60.42,
+      "lgbtq_social": 51.35
+    },
+    "BZ": {
+      "ei": 49.91,
+      "lgbtq_orient": 56.25,
+      "lgbtq_social": 43.57
+    },
+    "CA": {
+      "ei": 78.5,
+      "lgbtq_orient": 95.74,
+      "lgbtq_social": 61.25
+    },
+    "CH": {
+      "ei": 70.29,
+      "lgbtq_orient": 76.17,
+      "lgbtq_social": 64.4
+    },
+    "CL": {
+      "ei": 80.24,
+      "lgbtq_orient": 100,
+      "lgbtq_social": 60.48
+    },
+    "CN": {
+      "ei": 55.52,
+      "lgbtq_orient": 45.22,
+      "lgbtq_social": 65.83
+    },
+    "CO": {
+      "ei": 70.9,
+      "lgbtq_orient": 91.67,
+      "lgbtq_social": 50.13
+    },
+    "CR": {
+      "ei": 69.23,
+      "lgbtq_orient": 84.78,
+      "lgbtq_social": 53.68
+    },
+    "CU": {
+      "ei": 76.53,
+      "lgbtq_orient": 86.67,
+      "lgbtq_social": 66.4
+    },
+    "CV": {
+      "ei": 67.95,
+      "lgbtq_orient": 55.42,
+      "lgbtq_social": 80.48
+    },
+    "CY": {
+      "ei": 57.57,
+      "lgbtq_orient": 78.7,
+      "lgbtq_social": 36.44
+    },
+    "CZ": {
+      "ei": 72.03,
+      "lgbtq_orient": 80,
+      "lgbtq_social": 64.06
+    },
+    "DE": {
+      "ei": 80.12,
+      "lgbtq_orient": 100,
+      "lgbtq_social": 60.25
+    },
+    "DK": {
+      "ei": 81.57,
+      "lgbtq_orient": 93.75,
+      "lgbtq_social": 69.39
+    },
+    "EC": {
+      "ei": 65.46,
+      "lgbtq_orient": 89.13,
+      "lgbtq_social": 41.79
+    },
+    "EE": {
+      "ei": 58.17,
+      "lgbtq_orient": 72.5,
+      "lgbtq_social": 43.84
+    },
+    "ES": {
+      "ei": 83.46,
+      "lgbtq_orient": 99.88,
+      "lgbtq_social": 67.04
+    },
+    "FI": {
+      "ei": 76.08,
+      "lgbtq_orient": 86.25,
+      "lgbtq_social": 65.91
+    },
+    "FJ": {
+      "ei": 54.57,
+      "lgbtq_orient": 54.57,
+      "lgbtq_social": null
+    },
+    "FR": {
+      "ei": 73.95,
+      "lgbtq_orient": 89.58,
+      "lgbtq_social": 58.33
+    },
+    "GB": {
+      "ei": 68.31,
+      "lgbtq_orient": 82.08,
+      "lgbtq_social": 54.54
+    },
+    "GR": {
+      "ei": 65.93,
+      "lgbtq_orient": 91.67,
+      "lgbtq_social": 40.19
+    },
+    "HR": {
+      "ei": 56.96,
+      "lgbtq_orient": 80.42,
+      "lgbtq_social": 33.5
+    },
+    "HU": {
+      "ei": 48.52,
+      "lgbtq_orient": 57.08,
+      "lgbtq_social": 39.95
+    },
+    "IE": {
+      "ei": 69.7,
+      "lgbtq_orient": 80,
+      "lgbtq_social": 59.4
+    },
+    "IL": {
+      "ei": 61.8,
+      "lgbtq_orient": 72.92,
+      "lgbtq_social": 50.69
+    },
+    "IN": {
+      "ei": 50.58,
+      "lgbtq_orient": 48.09,
+      "lgbtq_social": 53.07
+    },
+    "IS": {
+      "ei": 93.07,
+      "lgbtq_orient": 95.65,
+      "lgbtq_social": 90.49
+    },
+    "IT": {
+      "ei": 66.17,
+      "lgbtq_orient": 73.41,
+      "lgbtq_social": 58.94
+    },
+    "JP": {
+      "ei": 53.4,
+      "lgbtq_orient": 56.82,
+      "lgbtq_social": 49.98
+    },
+    "KH": {
+      "ei": 45.83,
+      "lgbtq_orient": 40.91,
+      "lgbtq_social": 50.75
+    },
+    "KR": {
+      "ei": 45.94,
+      "lgbtq_orient": 53.18,
+      "lgbtq_social": 38.69
+    },
+    "LA": {
+      "ei": 44.9,
+      "lgbtq_orient": 40,
+      "lgbtq_social": 49.79
+    },
+    "LT": {
+      "ei": 47.11,
+      "lgbtq_orient": 66.25,
+      "lgbtq_social": 27.96
+    },
+    "LU": {
+      "ei": 67.45,
+      "lgbtq_orient": 82.4,
+      "lgbtq_social": 52.5
+    },
+    "LV": {
+      "ei": 46.21,
+      "lgbtq_orient": 57.5,
+      "lgbtq_social": 34.92
+    },
+    "ME": {
+      "ei": 55,
+      "lgbtq_orient": 74.58,
+      "lgbtq_social": 35.43
+    },
+    "MK": {
+      "ei": 49.09,
+      "lgbtq_orient": 65.42,
+      "lgbtq_social": 32.77
+    },
+    "MT": {
+      "ei": 80.31,
+      "lgbtq_orient": 100,
+      "lgbtq_social": 60.61
+    },
+    "MX": {
+      "ei": 70.73,
+      "lgbtq_orient": 84.82,
+      "lgbtq_social": 56.64
+    },
+    "MZ": {
+      "ei": 47.73,
+      "lgbtq_orient": 48.75,
+      "lgbtq_social": 46.71
+    },
+    "NA": {
+      "ei": 41.3,
+      "lgbtq_orient": 49.17,
+      "lgbtq_social": 33.43
+    },
+    "NL": {
+      "ei": 75.7,
+      "lgbtq_orient": 87.08,
+      "lgbtq_social": 64.32
+    },
+    "NO": {
+      "ei": 88.32,
+      "lgbtq_orient": 89.58,
+      "lgbtq_social": 87.06
+    },
+    "NP": {
+      "ei": 69.41,
+      "lgbtq_orient": 71.05,
+      "lgbtq_social": 67.76
+    },
+    "NZ": {
+      "ei": 80.61,
+      "lgbtq_orient": 95.83,
+      "lgbtq_social": 65.39
+    },
+    "PE": {
+      "ei": 54.27,
+      "lgbtq_orient": 64.19,
+      "lgbtq_social": 44.35
+    },
+    "PH": {
+      "ei": 54.03,
+      "lgbtq_orient": 49.38,
+      "lgbtq_social": 58.67
+    },
+    "PL": {
+      "ei": 50.73,
+      "lgbtq_orient": 58.33,
+      "lgbtq_social": 43.13
+    },
+    "PT": {
+      "ei": 76.93,
+      "lgbtq_orient": 93.75,
+      "lgbtq_social": 60.12
+    },
+    "RO": {
+      "ei": 46.64,
+      "lgbtq_orient": 60,
+      "lgbtq_social": 33.28
+    },
+    "RS": {
+      "ei": 50.13,
+      "lgbtq_orient": 67.08,
+      "lgbtq_social": 33.18
+    },
+    "SC": {
+      "ei": 60.91,
+      "lgbtq_orient": 55.42,
+      "lgbtq_social": 66.4
+    },
+    "SE": {
+      "ei": 74.92,
+      "lgbtq_orient": 84.58,
+      "lgbtq_social": 65.26
+    },
+    "SG": {
+      "ei": 43.74,
+      "lgbtq_orient": 38.75,
+      "lgbtq_social": 48.73
+    },
+    "SI": {
+      "ei": 64.67,
+      "lgbtq_orient": 80.83,
+      "lgbtq_social": 48.5
+    },
+    "SK": {
+      "ei": 49.18,
+      "lgbtq_orient": 64.9,
+      "lgbtq_social": 33.46
+    },
+    "SM": {
+      "ei": 66.75,
+      "lgbtq_orient": 62.5,
+      "lgbtq_social": 71
+    },
+    "SR": {
+      "ei": 41.07,
+      "lgbtq_orient": 59.17,
+      "lgbtq_social": 22.97
+    },
+    "TH": {
+      "ei": 64.87,
+      "lgbtq_orient": 62.5,
+      "lgbtq_social": 67.24
+    },
+    "TW": {
+      "ei": 59.44,
+      "lgbtq_orient": 68.13,
+      "lgbtq_social": 50.75
+    },
+    "UA": {
+      "ei": 48.43,
+      "lgbtq_orient": 58.18,
+      "lgbtq_social": 38.67
+    },
+    "US": {
+      "ei": 67.84,
+      "lgbtq_orient": 79.72,
+      "lgbtq_social": 55.95
+    },
+    "UY": {
+      "ei": 87.13,
+      "lgbtq_orient": 100,
+      "lgbtq_social": 74.25
+    },
+    "VN": {
+      "ei": 51.36,
+      "lgbtq_orient": 50,
+      "lgbtq_social": 52.71
+    },
+    "ZA": {
+      "ei": 67.06,
+      "lgbtq_orient": 76.67,
+      "lgbtq_social": 57.45
+    }
+  }
 }
