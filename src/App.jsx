@@ -166,7 +166,10 @@ export default function App() {
       <footer className="app-footer">
         <p>
           LGBTQ+: <a href="https://equaldex.com" target="_blank" rel="noreferrer">Equaldex</a>
-          {equaldexDateLabel && <span className="badge live">● {equaldexDateLabel}</span>}
+          {equaldexDateLabel
+            ? <span className="badge live">● {equaldexDateLabel}</span>
+            : <span className="badge cached">● built-in</span>
+          }
           {' · '}Healthcare: <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer">WHO GHO</a>
           <span className="badge cached">● annual</span>
           {' · '}Safety: <a href="https://data.worldbank.org/indicator/PV.EST" target="_blank" rel="noreferrer">World Bank</a>
