@@ -4,23 +4,34 @@ name: Update Equaldex LGBTQ+ scores (weekly)
 # Note: cron does not adjust for DST — during CEST (summer) this fires at 04:00 CET.
 # Can also be triggered manually from the Actions tab at any time.
 #
-# On success, commits updated equaldex data to main and lets the existing
-# deploy workflow handle the rebuild and publish to GitHub Pages.
+# `main` has a ruleset that requires the "build" status check, so this workflow
+# does NOT push to main directly. Instead it opens a pull request and enables
+# auto-merge. The PR triggers the build check in deploy.yml; once it passes,
+# the PR merges automatically and the existing deploy job publishes to Pages.
+#
+# Requirements (one-time setup):
+#   * Repo secret DATA_UPDATE_PAT — a fine-grained PAT scoped to this repo with
+#     "Contents: Read and write" and "Pull requests: Read and write".
+#     A PAT (not GITHUB_TOKEN) is required so the PR actually triggers the
+#     "build" check — PRs opened with GITHUB_TOKEN do not trigger workflows.
+#   * Settings -> General -> "Allow auto-merge" must be enabled.
 
 on:
   schedule:
     - cron: "0 2 * * 1"   # 02:00 UTC Mon = 03:00 CET / 04:00 CEST
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-equaldex:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -35,17 +46,26 @@ jobs:
         env:
           EQUALDEX_API_KEY: ${{ secrets.EQUALDEX_API_KEY }}
 
-      - name: Commit and push if data changed
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create pull request
+        id: cpr
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.DATA_UPDATE_PAT }}
+          add-paths: src/data/external-scores.json
+          branch: data/equaldex-update
+          delete-branch: true
+          commit-message: "data: update Equaldex LGBTQ+ scores"
+          title: "data: update Equaldex LGBTQ+ scores"
+          body: |
+            Automated weekly Equaldex refresh.
 
-          git add src/data/external-scores.json
+            Updates the `equaldex` key in `src/data/external-scores.json`.
+            Source: https://www.equaldex.com (data must not be stored longer than 30 days).
 
-          if git diff --cached --quiet; then
-            echo "No changes to external-scores.json — Equaldex data unchanged."
-          else
-            git commit -m "data: update Equaldex LGBTQ+ scores $(date +%Y-%m-%d)"
-            git push
-            echo "Committed and pushed updated Equaldex scores."
-          fi
+      - name: Enable auto-merge
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.DATA_UPDATE_PAT }}
+        # --squash keeps a clean single commit on main. Change to --merge or
+        # --rebase if that method is not enabled for the repository.
+        run: gh pr merge --squash --auto "${{ steps.cpr.outputs.pull-request-number }}"

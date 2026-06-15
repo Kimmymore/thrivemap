@@ -54,18 +54,26 @@ COUNTRY_CODES = sorted([
 
 def fetch_equaldex(api_key: str) -> dict:
     """
-    Calls /api/region/{code} for each country and returns
+    Calls GET /api/region?apiKey=...&regionid=CODE for each country and returns
     { iso2: { ei, lgbtq_orient, lgbtq_social } } for successful responses.
     Individual country failures are logged and skipped.
+
+    API reference: https://equaldex.stoplight.io/docs/equaldex/f3f4363c924a0-get-lgtbq-rights-by-region-id
+    regionid must be an uppercase ISO 3166-1 alpha-2 code (case-sensitive).
     """
+    BASE_URL = "https://www.equaldex.com/api/region"
     result = {}
     for code in COUNTRY_CODES:
-        url = f"https://www.equaldex.com/api/region/{code.lower()}?apiKey={api_key}"
+        params = {"apiKey": api_key, "regionid": code}  # code is already uppercase
         try:
-            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp = requests.get(BASE_URL, params=params, headers=HEADERS, timeout=15)
             if resp.status_code == 200:
                 data   = resp.json()
-                region = data.get("region") or data
+                # Response shape: {"regions": {"region": {...}}}
+                region = data.get("regions", {}).get("region", {})
+                if not region:
+                    log.warning("  %s → unexpected response shape: %s", code, data)
+                    continue
                 ei           = region.get("ei")
                 lgbtq_orient = region.get("ei_legal")
                 lgbtq_social = region.get("ei_po")

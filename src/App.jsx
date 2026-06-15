@@ -13,9 +13,9 @@ import {
   DEFAULT_WEIGHTS,
 } from './data/scoring';
 
-// Format as "Jan 2025", or null when Equaldex data has never been fetched.
+// Format as "15 Jun 2026", or null when Equaldex data has never been fetched.
 const equaldexDateLabel = equaldexLastUpdated
-  ? new Date(equaldexLastUpdated).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })
+  ? new Date(equaldexLastUpdated).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
   : null;
 import './App.css';
 
@@ -41,6 +41,7 @@ export default function App() {
 
   const [countries, setCountries] = useState(COUNTRIES);
   const [safetyStatus, setSafetyStatus] = useState('idle');
+  const [safetyFetchedAt, setSafetyFetchedAt] = useState(null);
   const [scored, setScored] = useState([]);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export default function App() {
     fetchWorldBankSafety().then(liveSafety => {
       if (liveSafety) {
         updated = mergeSafetyData(updated, liveSafety);
+        setSafetyFetchedAt(new Date());
         setSafetyStatus('ok');
       } else {
         setSafetyStatus('error');
@@ -61,6 +63,13 @@ export default function App() {
       setCountries(updated);
     });
   }, []);
+
+  // When the live World Bank fetch succeeded this session, show when it ran.
+  const safetyFetchedLabel = safetyFetchedAt
+    ? safetyFetchedAt.toLocaleString('en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+      })
+    : null;
 
   const computeScores = useCallback(() => {
     const results = countries.map(c => ({
@@ -166,11 +175,20 @@ export default function App() {
       <footer className="app-footer">
         <p>
           LGBTQ+: <a href="https://equaldex.com" target="_blank" rel="noreferrer">Equaldex</a>
-          {equaldexDateLabel && <span className="badge live">● {equaldexDateLabel}</span>}
+          {equaldexDateLabel
+            ? <>
+                <span className="badge live">● live</span>
+                <span className="badge-time">updated {equaldexDateLabel}</span>
+              </>
+            : <span className="badge cached">● built-in</span>
+          }
           {' · '}Healthcare: <a href="https://www.who.int/data/gho" target="_blank" rel="noreferrer">WHO GHO</a>
           <span className="badge cached">● annual</span>
           {' · '}Safety: <a href="https://data.worldbank.org/indicator/PV.EST" target="_blank" rel="noreferrer">World Bank</a>
-          {safetyStatus === 'ok' && <span className="badge live">● live</span>}
+          {safetyStatus === 'ok' && <>
+            <span className="badge live">● live</span>
+            {safetyFetchedLabel && <span className="badge-time">fetched {safetyFetchedLabel}</span>}
+          </>}
           {safetyStatus === 'error' && <span className="badge cached">● built-in</span>}
           {safetyStatus === 'loading' && <span className="badge loading-ind">● updating…</span>}
           {' · '}Scores are generalisations — individual experiences vary.
