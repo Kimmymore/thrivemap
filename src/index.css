@@ -1038,6 +1038,13 @@ a:hover { text-decoration: none; }
 .badge.cached   { background: var(--fair-bg);  color: var(--fair); }
 .badge.loading-ind { background: var(--good-bg); color: var(--good); }
 
+/* Muted "last fetched" timestamp shown next to a live badge */
+.badge-time {
+  font-size: 11px;
+  margin-left: 4px;
+  opacity: 0.7;
+}
+
 /* ── App.css cleanup ─────────────────────────────────────────── */
 /* (App.css is left empty — all styles are here) */
 

@@ -5,23 +5,34 @@ name: Update external scores (GPI + Rainbow Map)
 # Rainbow Map is published in May by ILGA-Europe.
 # Can also be triggered manually from the Actions tab at any time.
 #
-# On success, commits updated scores directly to main and lets the
-# existing deploy workflow handle the rebuild and publish to GitHub Pages.
+# `main` has a ruleset that requires the "build" status check, so this workflow
+# does NOT push to main directly. Instead it opens a pull request and enables
+# auto-merge. The PR triggers the build check in deploy.yml; once it passes,
+# the PR merges automatically and the existing deploy job publishes to Pages.
+#
+# Requirements (one-time setup):
+#   * Repo secret DATA_UPDATE_PAT — a fine-grained PAT scoped to this repo with
+#     "Contents: Read and write" and "Pull requests: Read and write".
+#     A PAT (not GITHUB_TOKEN) is required so the PR actually triggers the
+#     "build" check — PRs opened with GITHUB_TOKEN do not trigger workflows.
+#   * Settings -> General -> "Allow auto-merge" must be enabled.
 
 on:
   schedule:
     - cron: "0 8 1 7 *"   # 08:00 UTC on 1 July every year
   workflow_dispatch:       # manual trigger
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-scores:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -36,19 +47,26 @@ jobs:
         env:
           EQUALDEX_API_KEY: ${{ secrets.EQUALDEX_API_KEY }}
 
-      - name: Commit and push if data changed
-        run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create pull request
+        id: cpr
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.DATA_UPDATE_PAT }}
+          add-paths: src/data/external-scores.json
+          branch: data/external-scores-update
+          delete-branch: true
+          commit-message: "data: update GPI + Rainbow Map scores"
+          title: "data: update GPI + Rainbow Map scores"
+          body: |
+            Automated annual refresh of GPI (safety) and Rainbow Map (LGBTQ+) scores,
+            plus any other sources handled by `scripts/update_external_scores.py`.
 
-          git add src/data/external-scores.json
+            Updates `src/data/external-scores.json`.
 
-          # Only commit if there is actually something staged
-          if git diff --cached --quiet; then
-            echo "No changes to external-scores.json — sources may not have updated yet."
-          else
-            YEAR=$(date +%Y)
-            git commit -m "data: update GPI + Rainbow Map scores ${YEAR}"
-            git push
-            echo "Committed and pushed updated scores for ${YEAR}."
-          fi
+      - name: Enable auto-merge
+        if: ${{ steps.cpr.outputs.pull-request-number }}
+        env:
+          GH_TOKEN: ${{ secrets.DATA_UPDATE_PAT }}
+        # --squash keeps a clean single commit on main. Change to --merge or
+        # --rebase if that method is not enabled for the repository.
+        run: gh pr merge --squash --auto "${{ steps.cpr.outputs.pull-request-number }}"
