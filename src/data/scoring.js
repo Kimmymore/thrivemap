@@ -166,7 +166,11 @@ export function suggestWeights(persons) {
  */
 export async function fetchWorldBankSafety() {
   try {
-    const url = `${WB_API_BASE}/PV.EST?format=json&mrv=1&per_page=350`;
+    // PV.EST (Political Stability) lives in the Worldwide Governance Indicators
+    // database (source=3). It was archived out of the default WDI database, so
+    // without source=3 the API returns an "indicator not found" error and we
+    // would silently fall back to built-in safety data.
+    const url = `${WB_API_BASE}/PV.EST?source=3&format=json&mrv=1&per_page=350`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
