@@ -30,7 +30,7 @@ const SITE = 'https://www.thrivemap.app';
 const BUILD_DATE = new Date().toISOString().slice(0, 10);
 
 if (!existsSync(DIST)) {
-  console.error('dist/ not found — run `vite build` first.');
+  console.error('dist/ not found. Run `vite build` first.');
   process.exit(1);
 }
 
@@ -203,11 +203,11 @@ ${sources ? `<p class="sources">Sources: ${sources}</p>` : ''}`;
   const description = (`${c.name}: LGBTQ+ rights, social acceptance, racial experience, safety, healthcare, cost and visa options for people considering relocation. ${orientText}`).slice(0, 158);
 
   const body = `
-<nav class="sources"><a href="/countries/">← All countries</a></nav>
+<nav class="sources"><a href="/countries/">Back to all countries</a></nav>
 <h1>${c.flag} Living in ${esc(inName(c.name))} as an LGBTQ+ person</h1>
 <p class="lead">${esc(c.region)} · Equaldex Equality Index: ${c.ei}/100 · Typical annual average ${c.avg_temp_c}°C, ${c.sun_hours} sun hours/day</p>
 
-<p>How ${esc(inName(c.name))} scores across the dimensions ThriveMap measures (0–100, higher is more welcoming). These are baseline scores from public indices — the <a href="/">interactive app</a> personalises them to your profile and priorities and refreshes them with live data.</p>
+<p>How ${esc(inName(c.name))} scores across the dimensions ThriveMap measures (0–100, higher is more welcoming). These are baseline scores from public indices. The <a href="/">interactive app</a> personalises them to your profile and priorities and refreshes them with live data.</p>
 
 <table>
 <tr><th>Dimension</th><th>Score</th></tr>
@@ -223,9 +223,9 @@ ${racialRows}
 
 ${dimSections}
 
-<a class="cta" href="/">Get your personalised ranking →</a>
+<a class="cta" href="/">Get your personalised ranking</a>
 
-<p class="note">ThriveMap is a starting point, not a guarantee. Laws and social conditions change — always verify current conditions through the linked sources before travelling or relocating.</p>`;
+<p class="note">ThriveMap is a starting point, not a guarantee. Laws and social conditions change. Always verify current conditions through the linked sources before travelling or relocating.</p>`;
 
   const jsonLd = [
     {
@@ -243,7 +243,7 @@ ${dimSections}
   ];
 
   write(`countries/${slug}/index.html`, page({
-    title: `Living in ${inName(c.name)} as an LGBTQ+ person — rights, safety & livability | ThriveMap`,
+    title: `Living in ${inName(c.name)} as an LGBTQ+ person: rights, safety and livability | ThriveMap`,
     description,
     path,
     body,
@@ -261,17 +261,17 @@ function countriesIndex(entries) {
   const sections = Object.entries(byRegion).map(([region, list]) => `
 <h2>${esc(region)}</h2>
 <ul class="country-list">
-${list.map((c) => `<li><a href="/countries/${slugify(c.name)}/">${c.flag} ${esc(c.name)}</a> — Equality Index ${c.ei}/100</li>`).join('\n')}
+${list.map((c) => `<li><a href="/countries/${slugify(c.name)}/">${c.flag} ${esc(c.name)}</a>: Equality Index ${c.ei}/100</li>`).join('\n')}
 </ul>`).join('\n');
 
   const body = `
 <h1>Country guides for LGBTQ+ relocation</h1>
-<p class="lead">All ${COUNTRIES.length} countries in the ThriveMap dataset — every country where same-sex relations are legal (or decriminalised) for both men and women. Each guide covers LGBTQ+ legal rights, social acceptance, racial experience, safety, healthcare, cost of living and visa options, with sources.</p>
-<a class="cta" href="/">Rank these countries for your profile →</a>
+<p class="lead">All ${COUNTRIES.length} countries in the ThriveMap dataset: every country where same-sex relations are legal (or decriminalised) for both men and women. Each guide covers LGBTQ+ legal rights, social acceptance, racial experience, safety, healthcare, cost of living and visa options, with sources.</p>
+<a class="cta" href="/">Rank these countries for your profile</a>
 ${sections}`;
 
   write('countries/index.html', page({
-    title: `LGBTQ+ country guides — ${COUNTRIES.length} countries compared | ThriveMap`,
+    title: `LGBTQ+ country guides: ${COUNTRIES.length} countries compared | ThriveMap`,
     description: `Guides to ${COUNTRIES.length} countries for LGBTQ+ people and people of colour considering relocation: legal rights, social acceptance, safety, healthcare, cost and visas.`,
     path: '/countries/',
     body,
@@ -312,26 +312,26 @@ function methodologyPage() {
 <h2>How scores stay up to date</h2>
 <p>Scores are never just a static snapshot. Three APIs are called live on every visit to the app:</p>
 <ul>
-<li><strong><a href="https://www.equaldex.com">Equaldex</a></strong> — LGBTQ+ legal rights and social acceptance for all countries, updated continuously as laws change.</li>
-<li><strong><a href="https://www.who.int/data/gho">WHO Global Health Observatory</a></strong> — UHC Service Coverage Index, updated annually.</li>
-<li><strong><a href="https://data.worldbank.org/indicator/PV.EST">World Bank</a></strong> — Political Stability and Absence of Violence index, updated annually.</li>
+<li><strong><a href="https://www.equaldex.com">Equaldex</a></strong>: LGBTQ+ legal rights and social acceptance for all countries, updated continuously as laws change.</li>
+<li><strong><a href="https://www.who.int/data/gho">WHO Global Health Observatory</a></strong>: UHC Service Coverage Index, updated annually.</li>
+<li><strong><a href="https://data.worldbank.org/indicator/PV.EST">World Bank</a></strong>: Political Stability and Absence of Violence index, updated annually.</li>
 </ul>
 <p>On top of that, automated weekly and yearly jobs refresh the built-in dataset from Equaldex, the Global Peace Index, the ILGA-Europe Rainbow Map and WHO data. If a live call fails, the app falls back to the built-in dataset and shows which source you are looking at.</p>
 
 <h2>Personalisation</h2>
-<p>You build a profile for one or two people (gender identity, sexual orientation, racial background) and set importance sliders per dimension. Defaults are suggested from your profile — a lesbian couple of colour gets higher default weights on LGBTQ+ and racial dimensions. The weighted result ranks all ${COUNTRIES.length} countries from best to worst fit for <em>you</em>.</p>
+<p>You build a profile for one or two people (gender identity, sexual orientation, racial background) and set importance sliders per dimension. Defaults are suggested from your profile. A lesbian couple of colour gets higher default weights on LGBTQ+ and racial dimensions. The weighted result ranks all ${COUNTRIES.length} countries from best to worst fit for <em>you</em>.</p>
 
 <h2>Privacy</h2>
-<p>Everything is computed in your browser. Your profile and preferences are never stored or sent anywhere. There is no account, no tracking, and the code is <a href="https://github.com/Kimmymore/Thrivemap">open source</a>.</p>
+<p>Everything is computed in your browser. Nothing is saved: your profile and preferences are never stored or sent anywhere. There is no account, no tracking, and the code is <a href="https://github.com/Kimmymore/Thrivemap">open source</a>.</p>
 
 <h2>Limitations</h2>
 <p>Scores are generalisations built on aggregate research. They cannot capture every region, city or individual experience within a country. Racial experience scores in particular reflect reported group-level patterns, not predictions about any individual's life. Treat ThriveMap as a well-sourced starting point for your own research.</p>
 
-<a class="cta" href="/">Try it — get your ranking →</a>`;
+<a class="cta" href="/">Get your ranking</a>`;
 
   write('methodology/index.html', page({
-    title: 'Methodology — how ThriveMap scores countries | ThriveMap',
-    description: 'How ThriveMap scores 77 countries on LGBTQ+ rights, social acceptance, racial experience, safety, healthcare, cost and visas — data sources, update cadence and limitations.',
+    title: 'Methodology: how ThriveMap scores countries | ThriveMap',
+    description: 'How ThriveMap scores 77 countries on LGBTQ+ rights, social acceptance, racial experience, safety, healthcare, cost and visas: data sources, update cadence and limitations.',
     path: '/methodology/',
     body,
     jsonLd: [breadcrumbs([['Home', '/'], ['Methodology', '/methodology/']])],
@@ -346,23 +346,23 @@ function aboutPage() {
 <p class="lead">Find the countries where you can live freely as yourself.</p>
 
 <h2>Why this exists</h2>
-<p>With rights and freedoms shifting rapidly across the world — formerly progressive countries becoming more restrictive, new protections emerging in unexpected places — it can be overwhelming to figure out where you would actually be safe, accepted, and able to build a life.</p>
+<p>With rights and freedoms shifting rapidly across the world, with formerly progressive countries becoming more restrictive and new protections emerging in unexpected places, it can be overwhelming to figure out where you would actually be safe, accepted, and able to build a life.</p>
 <p>ThriveMap was built by a lesbian mixed-race couple navigating exactly this question. It grew out of personal research and a desire to make that research useful for others facing the same challenges.</p>
 <p>It is not a travel guide, but a starting point for people who need to ask: <em>where could we go?</em></p>
 
 <h2>What it is</h2>
-<p>A free, open-source web tool that ranks ${COUNTRIES.length} countries — every country where same-sex relations are legal — across nine dimensions of livability, personalised to your identity and priorities. See the <a href="/methodology/">methodology</a> for exactly how scoring works, or browse the <a href="/countries/">country guides</a>.</p>
+<p>A free, open-source web tool that ranks ${COUNTRIES.length} countries (every country where same-sex relations are legal) across nine dimensions of livability, personalised to your identity and priorities. See the <a href="/methodology/">methodology</a> for exactly how scoring works, or browse the <a href="/countries/">country guides</a>.</p>
 
 <h2>Privacy first</h2>
-<p>Your profile never leaves your browser. Nothing is stored or sent anywhere. No account, no cookies, no tracking.</p>
+<p>Nothing is saved. Your profile never leaves your browser, and nothing is stored or sent anywhere. No account, no cookies, no tracking.</p>
 
 <h2>Open source</h2>
-<p>The full source code and dataset are on <a href="https://github.com/Kimmymore/Thrivemap">GitHub</a>. Corrections and contributions are welcome — especially from people with lived experience in the countries covered.</p>
+<p>The full source code and dataset are on <a href="https://github.com/Kimmymore/Thrivemap">GitHub</a>. Corrections and contributions are welcome, especially from people with lived experience in the countries covered.</p>
 
-<a class="cta" href="/">Start exploring →</a>`;
+<a class="cta" href="/">Start exploring</a>`;
 
   write('about/index.html', page({
-    title: 'About ThriveMap — why it exists and who built it',
+    title: 'About ThriveMap: why it exists and who built it',
     description: 'ThriveMap is a free, open-source tool built by a lesbian mixed-race couple to help LGBTQ+ people and people of colour find countries where they can live freely.',
     path: '/about/',
     body,
@@ -397,11 +397,11 @@ function llmsTxt(entries) {
 
   const txt = `# ThriveMap
 
-> ThriveMap (https://www.thrivemap.app) is a free, open-source web tool that helps LGBTQ+ people and people of colour find countries where they can live safely and thrive. It ranks ${COUNTRIES.length} countries — every country where same-sex relations are legal — across nine dimensions: LGBTQ+ legal rights (sexual orientation and gender identity), LGBTQ+ social acceptance, racial experience, safety, healthcare, cost of living, visa/residency options and climate. Rankings are personalised to the user's identity and priorities, computed entirely in the browser with no account and no tracking.
+> ThriveMap (https://www.thrivemap.app) is a free, open-source web tool that helps LGBTQ+ people and people of colour find countries where they can live safely and thrive. It ranks ${COUNTRIES.length} countries (every country where same-sex relations are legal) across nine dimensions: LGBTQ+ legal rights (sexual orientation and gender identity), LGBTQ+ social acceptance, racial experience, safety, healthcare, cost of living, visa/residency options and climate. Rankings are personalised to the user's identity and priorities, computed entirely in the browser with no account and no tracking.
 
 Data sources include Equaldex, ILGA World, ILGA-Europe Rainbow Map, TGEU, WHO Global Health Observatory, World Bank Worldwide Governance Indicators, Global Peace Index, US State Department Human Rights Reports, Numbeo and national immigration portals. LGBTQ+ scores refresh live from the Equaldex API; WHO and World Bank data refresh live on each visit; the built-in dataset is refreshed by automated weekly and yearly jobs.
 
-ThriveMap was built by a lesbian mixed-race couple as a starting point for anyone asking "where could we go?". Scores are well-sourced generalisations, not guarantees — users should verify current conditions before relocating.
+ThriveMap was built by a lesbian mixed-race couple as a starting point for anyone asking "where could we go?". Scores are well-sourced generalisations, not guarantees. Users should verify current conditions before relocating.
 
 ## Key pages
 

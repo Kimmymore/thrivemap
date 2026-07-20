@@ -75,7 +75,7 @@ export default function Preferences({
         <h2 className="step-title">What matters most to you?</h2>
         <p className="step-subtitle">
           We've pre-filled smart defaults based on your profile. Adjust the sliders
-          to match your priorities — then see your personalised country ranking.
+          to match your priorities, then see your personalised country ranking.
         </p>
       </div>
 
@@ -111,7 +111,7 @@ export default function Preferences({
             <span>Tropical hot ☀️</span>
           </div>
           <p className="pref-desc">
-            Slide towards your ideal climate — from icy Scandinavia to year-round tropical warmth.
+            Slide towards your ideal climate, from icy Scandinavia to year-round tropical warmth.
           </p>
         </div>
 
@@ -149,7 +149,7 @@ export default function Preferences({
 
         <div className="pref-row">
           <div className="pref-row-header">
-            <span className="pref-label">Climate — importance</span>
+            <span className="pref-label">Climate importance</span>
             <span className={`pref-value ${weights.climate < 20 ? 'low' : weights.climate >= 70 ? 'high' : ''}`}>
               {weights.climate < 20 ? 'Off' : weights.climate < 40 ? 'Low' : weights.climate < 65 ? 'Medium' : 'High'}
             </span>

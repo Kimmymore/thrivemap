@@ -49,7 +49,7 @@ export default function App() {
 
     // Apply bundled annual data (GPI + Rainbow Map + WHO healthcare + Equaldex) first.
     // These are fetched each July by the GitHub Actions workflow and baked into the build.
-    // Equaldex is included here — fetched server-side so the API key never enters the bundle.
+    // Equaldex is included here, fetched server-side so the API key never enters the bundle.
     let updated = mergeExternalScores(COUNTRIES);
 
     fetchWorldBankSafety().then(liveSafety => {
@@ -191,7 +191,7 @@ export default function App() {
           </>}
           {safetyStatus === 'error' && <span className="badge cached">● built-in</span>}
           {safetyStatus === 'loading' && <span className="badge loading-ind">● updating…</span>}
-          {' · '}Scores are generalisations — individual experiences vary.
+          {' · '}Scores are generalisations. Individual experiences vary.
         </p>
         <p className="footer-love">Made with ❤️ for everyone who deserves a place to thrive.</p>
       </footer>

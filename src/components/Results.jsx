@@ -270,19 +270,19 @@ export default function Results({ scored, persons, weights, tempMin, tempMax, eq
         <div className="legend-box">
           <div className="legend-row">
             <span className="legend-swatch score-great">75–100</span>
-            <span>Excellent — strong fit</span>
+            <span>Excellent: strong fit</span>
           </div>
           <div className="legend-row">
             <span className="legend-swatch score-good">55–74</span>
-            <span>Good — generally positive</span>
+            <span>Good: generally positive</span>
           </div>
           <div className="legend-row">
             <span className="legend-swatch score-fair">35–54</span>
-            <span>Mixed — notable concerns</span>
+            <span>Mixed: notable concerns</span>
           </div>
           <div className="legend-row">
             <span className="legend-swatch score-low">0–34</span>
-            <span>Poor — significant challenges</span>
+            <span>Poor: significant challenges</span>
           </div>
           <p className="legend-note">
             Scores reflect averages and published indices. Individual experiences vary.
@@ -296,7 +296,7 @@ export default function Results({ scored, persons, weights, tempMin, tempMax, eq
           <div className="legend-dimensions">
             {DIMENSIONS.map(d => (
               <div key={d.key} className="legend-dim">
-                <strong>{d.label}</strong> — {d.description}
+                <strong>{d.label}</strong>: {d.description}
               </div>
             ))}
           </div>
@@ -334,7 +334,7 @@ export default function Results({ scored, persons, weights, tempMin, tempMax, eq
             <div>
               <h3 className="excluded-title">Outside your temperature range</h3>
               <p className="excluded-subtitle">
-                {excluded.length} {excluded.length === 1 ? 'country' : 'countries'} — sorted by score, but filtered out based on your climate limits.
+                {excluded.length} {excluded.length === 1 ? 'country' : 'countries'}, sorted by score but filtered out based on your climate limits.
                 Expand any to see why and read about regional climate options.
               </p>
             </div>
@@ -367,9 +367,9 @@ export default function Results({ scored, persons, weights, tempMin, tempMax, eq
         <p>
           <strong>Important:</strong> Scores are compiled from publicly available indices (Equaldex,
           Global Peace Index, WHO, Rainbow Europe, ILGA World, Numbeo) and are generalisations.
-          Temperature data represents monthly averages for representative regions — individual
+          Temperature data represents monthly averages for representative regions. Individual
           microclimates vary. Racial experience scores reflect aggregate reported experiences and do
-          not predict any individual's life. Laws and social attitudes change — always verify current
+          not predict any individual's life. Laws and social attitudes change. Always verify current
           conditions before making relocation decisions.
         </p>
       </div>

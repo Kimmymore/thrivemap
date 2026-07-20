@@ -260,7 +260,7 @@ export const DIMENSIONS = [
   {
     key:         'lgbtq_orient',
     label:       'LGBTQ+ Legal: Orientation',
-    description: 'Legal protection based on sexual orientation — covering same-sex partnerships, marriage, adoption and anti-discrimination law. Data from Equaldex.',
+    description: 'Legal protection based on sexual orientation, covering same-sex partnerships, marriage, adoption and anti-discrimination law. Data from Equaldex.',
   },
   {
     key:         'lgbtq_gender',
@@ -275,7 +275,7 @@ export const DIMENSIONS = [
   {
     key:         'racial',
     label:       'Racial Experience',
-    description: 'Estimated social comfort and safety for your racial background based on reported experiences, diversity research and colorism studies. Generalised — individual experiences vary.',
+    description: 'Estimated social comfort and safety for your racial background based on reported experiences, diversity research and colorism studies. Generalised: individual experiences vary.',
   },
   {
     key:         'safety',
@@ -295,6 +295,6 @@ export const DIMENSIONS = [
   {
     key:         'visa',
     label:       'Visa / Residency',
-    description: 'Ease of legally relocating — covering digital nomad visas, retirement visas, skilled worker routes and EU freedom of movement. Score reflects general accessibility for most Western passport holders.',
+    description: 'Ease of legally relocating, covering digital nomad visas, retirement visas, skilled worker routes and EU freedom of movement. Score reflects general accessibility for most Western passport holders.',
   },
 ];

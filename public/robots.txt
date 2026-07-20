@@ -1,9 +1,9 @@
-# www.thrivemap.app — everyone is welcome to crawl, including AI assistants.
+# www.thrivemap.app: everyone is welcome to crawl, including AI assistants.
 
 User-agent: *
 Allow: /
 
-# AI / LLM crawlers — explicitly allowed
+# AI / LLM crawlers, explicitly allowed
 User-agent: GPTBot
 Allow: /
 

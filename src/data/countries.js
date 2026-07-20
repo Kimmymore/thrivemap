@@ -13,7 +13,7 @@
  *
  * All scores are 0–100. Higher is always better/more welcoming.
  * Racial scores reflect the reported social experience of that
- * ethnic group in each country — they are generalisations based on
+ * ethnic group in each country. They are generalisations based on
  * aggregate research and do not reflect every individual's experience.
  *
  * temp_winter: coldest month average (°C) in the warmest accessible region.
@@ -131,7 +131,7 @@ export const COUNTRIES = [
     ei: 70, lgbtq_orient: 76, lgbtq_social: 64, lgbtq_gender: 70,
     avg_temp_c: 9, sun_hours: 5.5,
     temp_winter: 5, temp_summer: 25,
-    climate_region_note: "The Italian-speaking canton of Ticino (Lugano, Locarno) has Switzerland's mildest climate — rarely below 5°C in January. Alpine regions are much cooler year-round.",
+    climate_region_note: "The Italian-speaking canton of Ticino (Lugano, Locarno) has Switzerland's mildest climate, rarely below 5°C in January. Alpine regions are much cooler year-round.",
     racial: { white: 87, black: 62, mixed_bw: 65, asian: 70, south_asian: 65, hispanic: 68, mena: 60 },
     safety: 93, healthcare: 91, cost_value: 28, visa: 65,
   },
@@ -176,7 +176,7 @@ export const COUNTRIES = [
     ei: 77, lgbtq_orient: 94, lgbtq_social: 60, lgbtq_gender: 88,
     avg_temp_c: 18, sun_hours: 7.0,
     temp_winter: 14, temp_summer: 24,
-    climate_region_note: "The Azores archipelago enjoys year-round mild stability — never below 14°C and rarely above 24°C. Mainland Algarve is hotter in summer (up to 29°C) but cooler in winter (around 12°C).",
+    climate_region_note: "The Azores archipelago enjoys year-round mild stability, never below 14°C and rarely above 24°C. Mainland Algarve is hotter in summer (up to 29°C) but cooler in winter (around 12°C).",
     racial: { white: 82, black: 70, mixed_bw: 72, asian: 68, south_asian: 65, hispanic: 75, mena: 65 },
     safety: 85, healthcare: 76, cost_value: 68, visa: 78,
   },
@@ -354,7 +354,7 @@ export const COUNTRIES = [
     climate_region_note: "Ukraine's Black Sea coast (Odessa) has milder winters. Western Ukraine has the most temperate summers.",
     racial: { white: 78, black: 38, mixed_bw: 40, asian: 45, south_asian: 38, hispanic: 48, mena: 38 },
     safety: 25, healthcare: 55, cost_value: 80, visa: 55,
-    note: 'Active conflict zone — safety score reflects ongoing war.',
+    note: 'Active conflict zone: safety score reflects ongoing war.',
   },
 
   // ── NORTH AMERICA ────────────────────────────────────────────────
@@ -381,7 +381,7 @@ export const COUNTRIES = [
     ei: 70, lgbtq_orient: 84, lgbtq_social: 57, lgbtq_gender: 68,
     avg_temp_c: 23, sun_hours: 7.5,
     temp_winter: 23, temp_summer: 17,
-    climate_region_note: "Mexico's Riviera Maya and Caribbean coast stay warm year-round, never below 23°C. Mexico City and the central highlands rarely exceed 22°C in summer — July averages just 17°C at altitude.",
+    climate_region_note: "Mexico's Riviera Maya and Caribbean coast stay warm year-round, never below 23°C. Mexico City and the central highlands rarely exceed 22°C in summer. July averages just 17°C at altitude.",
     racial: { white: 72, black: 65, mixed_bw: 72, asian: 65, south_asian: 62, hispanic: 90, mena: 60 },
     safety: 48, healthcare: 65, cost_value: 80, visa: 82,
   },
@@ -453,7 +453,7 @@ export const COUNTRIES = [
     ei: 75, lgbtq_orient: 93, lgbtq_social: 56, lgbtq_gender: 75,
     avg_temp_c: 26, sun_hours: 6.5,
     temp_winter: 28, temp_summer: 22,
-    climate_region_note: "Brazil's Amazon basin stays warm year-round (never below 28°C). The southern highlands (Serra Gaúcha, Gramado) have cool summers averaging 22°C in January — Southern Hemisphere summer.",
+    climate_region_note: "Brazil's Amazon basin stays warm year-round (never below 28°C). The southern highlands (Serra Gaúcha, Gramado) have cool summers averaging 22°C in January (Southern Hemisphere summer).",
     racial: { white: 72, black: 80, mixed_bw: 82, asian: 72, south_asian: 65, hispanic: 85, mena: 62 },
     safety: 45, healthcare: 62, cost_value: 72, visa: 72,
   },
@@ -471,7 +471,7 @@ export const COUNTRIES = [
     ei: 65, lgbtq_orient: 89, lgbtq_social: 42, lgbtq_gender: 65,
     avg_temp_c: 22, sun_hours: 5.0,
     temp_winter: 29, temp_summer: 15,
-    climate_region_note: "Ecuador's Pacific coast (Guayaquil) is tropical year-round, never below 29°C. Quito at 2,800m has a perpetual spring climate — temperatures remain almost constant year-round, never exceeding 20°C.",
+    climate_region_note: "Ecuador's Pacific coast (Guayaquil) is tropical year-round, never below 29°C. Quito at 2,800m has a perpetual spring climate. Temperatures remain almost constant year-round, never exceeding 20°C.",
     racial: { white: 68, black: 70, mixed_bw: 72, asian: 65, south_asian: 60, hispanic: 88, mena: 60 },
     safety: 52, healthcare: 60, cost_value: 78, visa: 80,
   },
@@ -480,7 +480,7 @@ export const COUNTRIES = [
     ei: 54, lgbtq_orient: 64, lgbtq_social: 44, lgbtq_gender: 50,
     avg_temp_c: 20, sun_hours: 6.5,
     temp_winter: 26, temp_summer: 16,
-    climate_region_note: "Peru's Amazon region (Iquitos) stays warm year-round (26°C in July). The Andean highlands (Arequipa, Cusco) have pleasantly mild summers around 16°C — even Lima is kept cool by the cold Humboldt Current.",
+    climate_region_note: "Peru's Amazon region (Iquitos) stays warm year-round (26°C in July). The Andean highlands (Arequipa, Cusco) have pleasantly mild summers around 16°C. Even Lima is kept cool by the cold Humboldt Current.",
     racial: { white: 68, black: 65, mixed_bw: 68, asian: 68, south_asian: 60, hispanic: 88, mena: 58 },
     safety: 55, healthcare: 60, cost_value: 78, visa: 78,
   },
@@ -489,7 +489,7 @@ export const COUNTRIES = [
     ei: 62, lgbtq_orient: 87, lgbtq_social: 38, lgbtq_gender: 60,
     avg_temp_c: 18, sun_hours: 7.0,
     temp_winter: 20, temp_summer: 13,
-    climate_region_note: "Bolivia's eastern lowlands (Santa Cruz) stay warm year-round, averaging 20°C in July. La Paz at 3,600m altitude has a unique year-round cool climate — temperatures rarely exceed 15°C in any month.",
+    climate_region_note: "Bolivia's eastern lowlands (Santa Cruz) stay warm year-round, averaging 20°C in July. La Paz at 3,600m altitude has a unique year-round cool climate. Temperatures rarely exceed 15°C in any month.",
     racial: { white: 62, black: 58, mixed_bw: 60, asian: 60, south_asian: 55, hispanic: 85, mena: 55 },
     safety: 55, healthcare: 55, cost_value: 82, visa: 78,
   },
@@ -563,7 +563,7 @@ export const COUNTRIES = [
     ei: 52, lgbtq_orient: 39, lgbtq_social: 66, lgbtq_gender: 30,
     avg_temp_c: 13, sun_hours: 5.5,
     temp_winter: 22, temp_summer: 19,
-    climate_region_note: "China has extraordinary climate diversity. Tropical Hainan island stays warm year-round (22°C January). Kunming in Yunnan is known as the 'Spring City' — its altitude keeps temperatures between 8–23°C all year, with July averaging just 19°C.",
+    climate_region_note: "China has extraordinary climate diversity. Tropical Hainan island stays warm year-round (22°C January). Kunming in Yunnan is known as the 'Spring City'. Its altitude keeps temperatures between 8–23°C all year, with July averaging just 19°C.",
     racial: { white: 65, black: 48, mixed_bw: 52, asian: 85, south_asian: 58, hispanic: 58, mena: 52 },
     safety: 72, healthcare: 75, cost_value: 65, visa: 35,
   },
@@ -574,7 +574,7 @@ export const COUNTRIES = [
     ei: 65, lgbtq_orient: 63, lgbtq_social: 67, lgbtq_gender: 55,
     avg_temp_c: 28, sun_hours: 7.0,
     temp_winter: 28, temp_summer: 27,
-    climate_region_note: "Thailand's southern peninsula (Phuket, Koh Samui) stays warm year-round, never below 28°C. The northern highlands are cooler than the lowland plains — but the whole country sees peak heat in April/May before the monsoon.",
+    climate_region_note: "Thailand's southern peninsula (Phuket, Koh Samui) stays warm year-round, never below 28°C. The northern highlands are cooler than the lowland plains, but the whole country sees peak heat in April/May before the monsoon.",
     racial: { white: 72, black: 55, mixed_bw: 58, asian: 82, south_asian: 65, hispanic: 60, mena: 62 },
     safety: 72, healthcare: 78, cost_value: 82, visa: 72,
     note: 'Marriage equality legislation passed in 2024.',
@@ -593,7 +593,7 @@ export const COUNTRIES = [
     ei: 54, lgbtq_orient: 49, lgbtq_social: 59, lgbtq_gender: 45,
     avg_temp_c: 27, sun_hours: 7.0,
     temp_winter: 25, temp_summer: 23,
-    climate_region_note: "The Philippines' coastal lowlands stay warm year-round, never below 25°C. Baguio City in the Cordillera highlands — known as the 'Summer Capital' — has a pleasantly cool climate year-round, rarely exceeding 23°C.",
+    climate_region_note: "The Philippines' coastal lowlands stay warm year-round, never below 25°C. Baguio City in the Cordillera highlands, known as the 'Summer Capital', has a pleasantly cool climate year-round, rarely exceeding 23°C.",
     racial: { white: 70, black: 62, mixed_bw: 65, asian: 85, south_asian: 65, hispanic: 72, mena: 60 },
     safety: 52, healthcare: 60, cost_value: 78, visa: 72,
   },
@@ -644,7 +644,7 @@ export const COUNTRIES = [
     climate_region_note: "Nepal's southern Terai lowlands stay warm in winter (15°C January). The Kathmandu Valley has a temperate climate with pleasant summers around 25°C.",
     racial: { white: 65, black: 52, mixed_bw: 55, asian: 72, south_asian: 80, hispanic: 58, mena: 60 },
     safety: 72, healthcare: 55, cost_value: 88, visa: 68,
-    note: 'Progressive constitution — same-sex marriage registration began 2023.',
+    note: 'Progressive constitution: same-sex marriage registration began 2023.',
   },
 
   // ── MIDDLE EAST ──────────────────────────────────────────────────
@@ -681,7 +681,7 @@ export const COUNTRIES = [
     ei: 41, lgbtq_orient: 49, lgbtq_social: 33, lgbtq_gender: 38,
     avg_temp_c: 22, sun_hours: 9.0,
     temp_winter: 13, temp_summer: 18,
-    climate_region_note: "Namibia's interior plateau has cold winter nights (averaging 13°C in July). The Skeleton Coast (Swakopmund, Walvis Bay) benefits from the cold Benguela ocean current, keeping summer temperatures surprisingly mild — rarely above 18°C even in January.",
+    climate_region_note: "Namibia's interior plateau has cold winter nights (averaging 13°C in July). The Skeleton Coast (Swakopmund, Walvis Bay) benefits from the cold Benguela ocean current, keeping summer temperatures surprisingly mild, rarely above 18°C even in January.",
     racial: { white: 68, black: 85, mixed_bw: 82, asian: 65, south_asian: 60, hispanic: 60, mena: 58 },
     safety: 62, healthcare: 58, cost_value: 72, visa: 62,
   },

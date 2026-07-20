@@ -98,7 +98,7 @@ export default function ProfileSetup({ persons, onNext }) {
       <div className="step-hero">
         <h1 className="step-title">Where can you live a happy, equal life?</h1>
         <p className="step-subtitle">
-          Tell us about yourself — or you and your partner — and we'll show you which countries
+          Tell us about yourself, or you and your partner, and we'll show you which countries
           offer the legal protections, social acceptance and quality of life that match your needs.
         </p>
       </div>
