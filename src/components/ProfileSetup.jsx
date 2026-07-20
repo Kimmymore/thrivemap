@@ -96,27 +96,31 @@ export default function ProfileSetup({ persons, onNext }) {
   return (
     <div className="step-container">
       <div className="step-hero">
-        <h1 className="step-title">Where can you live a happy, equal life?</h1>
+        <h1 className="step-title">Live where you can be open about who you are.</h1>
         <p className="step-subtitle">
-          Tell us about yourself, or you and your partner, and we'll show you which countries
-          offer the legal protections, social acceptance and quality of life that match your needs.
+          77 countries. Nine dimensions. Ranked for you. Nothing is saved: no account,
+          no cookies, no tracking. Your answers never leave your browser.
         </p>
       </div>
 
       <div className="person-count-toggle">
         <span className="toggle-label">I'm searching as:</span>
-        <button
-          className={`toggle-btn ${localPersons.length === 1 ? 'active' : ''}`}
-          onClick={() => setCount(1)}
-        >
-          An individual
-        </button>
-        <button
-          className={`toggle-btn ${localPersons.length === 2 ? 'active' : ''}`}
-          onClick={() => setCount(2)}
-        >
-          A couple
-        </button>
+        <div className="segmented" role="group" aria-label="Number of people">
+          <button
+            className={`toggle-btn ${localPersons.length === 1 ? 'active' : ''}`}
+            onClick={() => setCount(1)}
+            aria-pressed={localPersons.length === 1}
+          >
+            An individual
+          </button>
+          <button
+            className={`toggle-btn ${localPersons.length === 2 ? 'active' : ''}`}
+            onClick={() => setCount(2)}
+            aria-pressed={localPersons.length === 2}
+          >
+            A couple
+          </button>
+        </div>
       </div>
 
       <div className={`persons-grid ${localPersons.length === 2 ? 'two-up' : ''}`}>
@@ -134,12 +138,13 @@ export default function ProfileSetup({ persons, onNext }) {
 
       <div className="step-actions">
         <button className="btn-primary" onClick={handleNext}>
-          Set my preferences →
+          Show me my countries
         </button>
       </div>
 
-      <p className="privacy-note">
-        Your answers never leave your browser. No data is stored or sent to any server.
+      <p className="nothing-saved">
+        <strong>Nothing is saved.</strong> Your answers never leave your browser.
+        No account, no cookies, no tracking, no data sent to any server.
       </p>
     </div>
   );

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { DIMENSIONS } from '../data/scoring';
 import { ETHNICITY_OPTIONS, ORIENTATION_OPTIONS, GENDER_OPTIONS } from '../data/countries';
 import { getDetail, getSources } from '../data/countryDetails';
@@ -47,7 +47,7 @@ function DimDetail({ countryCode, dimension, score }) {
   );
 }
 
-function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReason }) {
+function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReason, order = 99 }) {
   const [expandedDim, setExpandedDim] = useState(null);
   const dims = DIMENSIONS.filter(d => country.breakdown[d.key] !== undefined);
 
@@ -55,21 +55,27 @@ function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReas
     setExpandedDim(prev => prev === key ? null : key);
   };
 
+  // Stagger is capped at the first 10 rows so the list never feels slow.
+  const staggered = order < 10;
+
   return (
-    <div className={`country-row ${!excluded && rank <= 3 ? 'top-ranked' : ''} ${excluded ? 'country-row-excluded' : ''}`}>
+    <div
+      className={`country-row ${!excluded && rank <= 3 ? 'top-ranked' : ''} ${excluded ? 'country-row-excluded' : ''} ${staggered ? 'stagger' : ''}`}
+      style={staggered ? { '--i': order } : undefined}
+    >
       <div className="country-main" onClick={onToggle} role="button" tabIndex={0}
-        onKeyDown={e => e.key === 'Enter' && onToggle()}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); }
+        }}
         aria-expanded={expanded}
+        aria-label={`${country.name}, rank ${rank}, match ${country.total} out of 100`}
       >
         <div className="country-rank">
-          {!excluded && rank <= 3
-            ? ['🥇', '🥈', '🥉'][rank - 1]
-            : <span className="rank-num">{rank}</span>
-          }
+          <span className="rank-num">{rank}</span>
         </div>
 
         <div className="country-identity">
-          <span className="country-flag">{country.flag}</span>
+          <span className="country-flag" role="img" aria-label={country.name}>{country.flag}</span>
           <div>
             <div className="country-name">{country.name}</div>
             <div className="country-region">{country.region}</div>
@@ -94,20 +100,20 @@ function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReas
           ))}
         </div>
 
-        <button className="expand-btn" aria-label={expanded ? 'Collapse' : 'Expand'}>
+        {/* Decorative only: the row itself is the button and carries aria-expanded,
+            so a nested <button> here would be invalid ARIA and a second tab stop. */}
+        <span className="expand-btn" aria-hidden="true">
           {expanded ? '▲' : '▼'}
-        </button>
+        </span>
       </div>
 
       {expanded && (
         <div className="country-detail">
           {exclusionReason && (
-            <div className="exclusion-reason">
-              🌡️ {exclusionReason}
-            </div>
+            <div className="exclusion-reason">{exclusionReason}</div>
           )}
           {country.note && (
-            <div className="country-note">ℹ️ {country.note}</div>
+            <div className="country-note">{country.note}</div>
           )}
 
           <p className="dim-click-hint">Click any score card to read country-specific detail and sources.</p>
@@ -122,7 +128,9 @@ function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReas
                   onClick={() => toggleDim(d.key)}
                   role="button"
                   tabIndex={0}
-                  onKeyDown={e => e.key === 'Enter' && toggleDim(d.key)}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleDim(d.key); }
+                  }}
                   aria-expanded={isOpen}
                 >
                   <div className="detail-label-row">
@@ -144,16 +152,14 @@ function CountryRow({ country, rank, expanded, onToggle, excluded, exclusionReas
           </div>
 
           <div className="detail-climate">
-            <span>🌡️ Avg temp: <strong>{country.avg_temp_c}°C</strong></span>
-            <span>❄️ Coldest month: <strong>{country.temp_winter}°C</strong></span>
-            <span>🔆 Hottest month: <strong>{country.temp_summer}°C</strong></span>
-            <span>☀️ Avg sun: <strong>{country.sun_hours}h/day</strong></span>
+            <span>Avg temp: <strong>{country.avg_temp_c}°C</strong></span>
+            <span>Coldest month: <strong>{country.temp_winter}°C</strong></span>
+            <span>Hottest month: <strong>{country.temp_summer}°C</strong></span>
+            <span>Avg sun: <strong>{country.sun_hours}h/day</strong></span>
           </div>
 
           {country.climate_region_note && (
-            <div className="climate-region-note">
-              🗺️ {country.climate_region_note}
-            </div>
+            <div className="climate-region-note">{country.climate_region_note}</div>
           )}
 
           <a
@@ -239,9 +245,12 @@ export default function Results({ scored, persons, weights, tempMin, tempMax, eq
         <div className="top3-grid">
           {top3.map((c, i) => (
             <div key={c.code} className="top3-card" onClick={() => toggle(c.code)} role="button" tabIndex={0}
-              onKeyDown={e => e.key === 'Enter' && toggle(c.code)}>
-              <div className="top3-medal">{['🥇', '🥈', '🥉'][i]}</div>
-              <div className="top3-flag">{c.flag}</div>
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(c.code); }
+              }}
+              aria-label={`Rank ${i + 1}, ${c.name}, match ${c.total} out of 100`}>
+              <div className="top3-rank">{String(i + 1).padStart(2, '0')}</div>
+              <span className="top3-flag" role="img" aria-label={c.name}>{c.flag}</span>
               <div className="top3-name">{c.name}</div>
               <div className={`top3-score ${scoreColor(c.total)}`}>{c.total}<span>/100</span></div>
             </div>
@@ -305,16 +314,23 @@ export default function Results({ scored, persons, weights, tempMin, tempMax, eq
 
       {/* Matching countries */}
       <div className="country-list" role="list">
-        {filteredPassing.map((c) => (
-          <CountryRow
-            key={c.code}
-            country={c}
-            rank={passing.indexOf(c) + 1}
-            expanded={expanded === c.code}
-            onToggle={() => toggle(c.code)}
-            excluded={false}
-          />
-        ))}
+        {filteredPassing.map((c, i) => {
+          const rank = passing.indexOf(c) + 1;
+          return (
+            <Fragment key={c.code}>
+              <CountryRow
+                country={c}
+                rank={rank}
+                order={i}
+                expanded={expanded === c.code}
+                onToggle={() => toggle(c.code)}
+                excluded={false}
+              />
+              {/* Pride stripe, appearance 2 of 2: divides the top three from the rest. */}
+              {!filter && rank === 3 && <hr className="stripe-divider" aria-hidden="true" />}
+            </Fragment>
+          );
+        })}
         {filteredPassing.length === 0 && passing.length > 0 && (
           <p className="no-results">No matching countries for your search.</p>
         )}
@@ -330,14 +346,11 @@ export default function Results({ scored, persons, weights, tempMin, tempMax, eq
       {hasFilter && excluded.length > 0 && (
         <div className="excluded-section">
           <div className="excluded-header">
-            <span className="excluded-header-icon">🌡️</span>
-            <div>
-              <h3 className="excluded-title">Outside your temperature range</h3>
-              <p className="excluded-subtitle">
-                {excluded.length} {excluded.length === 1 ? 'country' : 'countries'}, sorted by score but filtered out based on your climate limits.
-                Expand any to see why and read about regional climate options.
-              </p>
-            </div>
+            <h3 className="excluded-title">Outside your temperature range</h3>
+            <p className="excluded-subtitle">
+              {excluded.length} {excluded.length === 1 ? 'country' : 'countries'}, sorted by score but filtered out based on your climate limits.
+              Expand any to see why and read about regional climate options.
+            </p>
           </div>
           <div className="country-list" role="list">
             {filteredExcluded.map((c, i) => (
@@ -359,7 +372,7 @@ export default function Results({ scored, persons, weights, tempMin, tempMax, eq
       )}
 
       <div className="step-actions">
-        <button className="btn-secondary" onClick={onBack}>← Adjust preferences</button>
+        <button className="btn-secondary" onClick={onBack}>Adjust priorities</button>
         <button className="btn-ghost" onClick={onReset}>Start over</button>
       </div>
 

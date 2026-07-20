@@ -17,7 +17,7 @@
  *   dist/llms.txt
  */
 
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -64,43 +64,84 @@ const RACIAL_LABELS = {
   hispanic: 'Hispanic / Latino', mena: 'Middle Eastern / North African',
 };
 
+// Same four-level semantic scale the app uses. Colour is never the only signal:
+// the number is always printed next to the bar.
+const scoreClass = (s) => (s >= 75 ? 'great' : s >= 55 ? 'good' : s >= 35 ? 'fair' : 'low');
+
 const scoreBar = (score) => `
-  <div class="bar"><div class="bar-fill" style="width:${score}%"></div></div>
-  <span class="score-num">${score}</span>`;
+  <div class="bar"><div class="bar-fill ${scoreClass(score)}" style="width:${score}%"></div></div>
+  <span class="score-num ${scoreClass(score)}">${score}</span>`;
+
+// Reuse the hashed Space Grotesk woff2 files Vite already emitted for the app,
+// so the static pages render in the same typeface without a second download
+// or any third-party font CDN.
+function fontFaces() {
+  const dir = join(DIST, 'assets');
+  if (!existsSync(dir)) return '';
+  return readdirSync(dir)
+    .filter((f) => /^space-grotesk-latin-\d+-normal.*\.woff2$/.test(f))
+    .map((f) => {
+      const weight = f.match(/latin-(\d+)-normal/)[1];
+      return `@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:${weight};font-display:swap;src:url('/assets/${f}') format('woff2')}`;
+    })
+    .join('');
+}
+
+const PRIDE_DOWN = `linear-gradient(to bottom,var(--pride-1) 0 16.666%,var(--pride-2) 16.666% 33.333%,var(--pride-3) 33.333% 50%,var(--pride-4) 50% 66.666%,var(--pride-5) 66.666% 83.333%,var(--pride-6) 83.333% 100%)`;
+const PRIDE_ACROSS = PRIDE_DOWN.replace('to bottom', 'to right');
 
 // ── Shared page template ─────────────────────────────────────────────────────
 
-const CSS = `
-  :root{--bg:#fafaf9;--surface:#fff;--border:#e5e4e2;--text:#2c2c2c;--soft:#6b6b6b;
-    --primary:#5c4de8;--primary-dark:#4538cc;--primary-bg:#f0eefe}
+const CSS = `${fontFaces()}
+  :root{--bg:#f2ecf4;--surface:#fdfbfe;--surface-2:#e9e0ee;--border:#ddd0e2;
+    --text:#241d28;--soft:#5f5567;--faint:#6a6072;
+    --accent:#d4537e;--accent-deep:#ad3159;--accent-soft:#f7e6ee;
+    --great:#15683f;--good:#1f5896;--fair:#8a5200;--low:#a81d1d;
+    --pride-1:#e40303;--pride-2:#ff8c00;--pride-3:#ffd400;
+    --pride-4:#008026;--pride-5:#2461ff;--pride-6:#8b2fc9;--rail:10px}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);
-    font-family:system-ui,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;line-height:1.65}
-  header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px}
+    font-family:'Space Grotesk',system-ui,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+    line-height:1.6;padding-left:var(--rail)}
+  .pride-rail{position:fixed;inset:0 auto 0 0;width:var(--rail);z-index:10;background:${PRIDE_DOWN}}
+  @media(max-width:700px){:root{--rail:6px}
+    body{padding-left:0;padding-top:var(--rail)}
+    .pride-rail{inset:0 0 auto 0;width:auto;height:var(--rail);background:${PRIDE_ACROSS}}}
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px}
   header .inner,main,footer .inner{max-width:760px;margin:0 auto}
   header a{color:var(--text);text-decoration:none;margin-right:18px;font-size:.95rem}
-  header a.logo{color:var(--primary);font-weight:700;font-size:1.05rem}
-  header a:hover{color:var(--primary)}
-  main{padding:36px 24px 64px}
-  h1{font-size:1.9rem;line-height:1.25;margin:.2em 0 .4em}
-  h2{font-size:1.25rem;margin-top:2em;border-bottom:1px solid var(--border);padding-bottom:.3em}
-  a{color:var(--primary-dark)}
+  header a.logo{color:var(--accent-deep);font-weight:700;font-size:1.05rem;
+    text-transform:uppercase;letter-spacing:.02em}
+  header a:hover{color:var(--accent-deep)}
+  main{padding:40px 24px 64px}
+  h1{font-size:2.4rem;line-height:1.05;letter-spacing:-1.5px;margin:.2em 0 .4em;font-weight:700}
+  @media(max-width:600px){h1{font-size:1.8rem;letter-spacing:-1px}}
+  h2{font-size:1.25rem;margin-top:2em;border-bottom:1px solid var(--border);
+    padding-bottom:.3em;font-weight:700;letter-spacing:-.02em}
+  a{color:var(--accent-deep);text-underline-offset:2px}
+  a:focus-visible,.cta:focus-visible{outline:2px solid var(--accent-deep);outline-offset:2px}
   .lead{font-size:1.08rem;color:var(--soft)}
   table{border-collapse:collapse;width:100%;margin:1em 0}
-  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);font-size:.95rem;vertical-align:middle}
-  th{color:var(--soft);font-weight:600}
-  .bar{display:inline-block;width:120px;height:8px;background:var(--primary-bg);border-radius:4px;vertical-align:middle;margin-right:8px}
-  .bar-fill{height:8px;background:var(--primary);border-radius:4px}
-  .score-num{font-variant-numeric:tabular-nums;font-weight:600}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--border);
+    font-size:.95rem;vertical-align:middle}
+  th{color:var(--soft);font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.07em}
+  .bar{display:inline-block;width:120px;height:8px;background:var(--surface-2);
+    border-radius:4px;vertical-align:middle;margin-right:8px}
+  .bar-fill{height:8px;border-radius:4px;background:var(--accent)}
+  .bar-fill.great{background:var(--great)}.bar-fill.good{background:var(--good)}
+  .bar-fill.fair{background:var(--fair)}.bar-fill.low{background:var(--low)}
+  .score-num{font-variant-numeric:tabular-nums;font-weight:700}
+  .score-num.great{color:var(--great)}.score-num.good{color:var(--good)}
+  .score-num.fair{color:var(--fair)}.score-num.low{color:var(--low)}
   .sources{font-size:.88rem;color:var(--soft)}
-  .sources a{color:var(--soft)}
-  .note{background:var(--primary-bg);border-radius:8px;padding:14px 18px;font-size:.92rem}
-  .cta{display:inline-block;background:var(--primary);color:#fff;text-decoration:none;
-    padding:12px 22px;border-radius:8px;font-weight:600;margin:1.2em 0}
-  .cta:hover{background:var(--primary-dark)}
+  .note{background:var(--accent-soft);border-radius:8px;padding:14px 18px;font-size:.92rem}
+  .cta{display:inline-block;background:var(--accent-deep);color:#fff;text-decoration:none;
+    padding:13px 24px;border-radius:8px;font-weight:500;margin:1.2em 0}
+  .cta:hover{background:#96284a}
   .country-list{columns:2;column-gap:32px;padding-left:1.2em}
   @media(max-width:600px){.country-list{columns:1}}
-  footer{border-top:1px solid var(--border);padding:20px 24px;color:var(--soft);font-size:.85rem}
+  footer{border-top:1px solid var(--border);padding:22px 24px;color:var(--soft);
+    font-size:.85rem;background:var(--surface)}
 `;
 
 function page({ title, description, path, body, jsonLd }) {
@@ -120,13 +161,14 @@ function page({ title, description, path, body, jsonLd }) {
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:image" content="${SITE}/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#5c4de8">
+<meta name="theme-color" content="#ad3159">
 ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ''}
 <style>${CSS}</style>
 </head>
 <body>
+<div class="pride-rail" aria-hidden="true"></div>
 <header><div class="inner">
-  <a class="logo" href="/">🌈 ThriveMap</a>
+  <a class="logo" href="/">ThriveMap</a>
   <a href="/countries/">Countries</a>
   <a href="/methodology/">Methodology</a>
   <a href="/about/">About</a>

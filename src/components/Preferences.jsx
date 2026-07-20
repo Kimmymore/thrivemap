@@ -1,7 +1,7 @@
 import { DIMENSIONS } from '../data/scoring';
 import { TEMP_MIN_OFF, TEMP_MAX_OFF } from '../App';
 
-const TEMP_LABELS = ['❄️ Very cold', 'Cold', 'Mild / temperate', 'Warm', '☀️ Tropical hot'];
+const TEMP_LABELS = ['Very cold', 'Cold', 'Mild / temperate', 'Warm', 'Tropical hot'];
 
 function tempLabel(val) {
   const idx = Math.round((val / 100) * (TEMP_LABELS.length - 1));
@@ -88,7 +88,7 @@ export default function Preferences({
       </div>
 
       <div className="pref-section">
-        <h3 className="pref-section-title">🌡️ Climate preferences</h3>
+        <h3 className="pref-section-title">Climate preferences</h3>
 
         <div className="pref-row">
           <div className="pref-row-header">
@@ -107,8 +107,8 @@ export default function Preferences({
             style={{ '--pct': `${tempPref}%` }}
           />
           <div className="temp-scale-labels">
-            <span>❄️ Arctic cold</span>
-            <span>Tropical hot ☀️</span>
+            <span>Arctic cold</span>
+            <span>Tropical hot</span>
           </div>
           <p className="pref-desc">
             Slide towards your ideal climate, from icy Scandinavia to year-round tropical warmth.
@@ -172,7 +172,7 @@ export default function Preferences({
       </div>
 
       <div className="pref-section">
-        <h3 className="pref-section-title">⚖️ What matters to your happiness?</h3>
+        <h3 className="pref-section-title">What matters to your happiness?</h3>
 
         {otherDimensions.map(dim => (
           <WeightSlider
@@ -185,11 +185,15 @@ export default function Preferences({
       </div>
 
       <div className="step-actions">
-        <button className="btn-secondary" onClick={onBack}>← Back</button>
+        <button className="btn-secondary" onClick={onBack}>Back</button>
         <button className="btn-primary" onClick={onNext}>
-          Show my results →
+          Show my results
         </button>
       </div>
+
+      <p className="nothing-saved">
+        <strong>Nothing is saved.</strong> Your priorities stay in this browser tab.
+      </p>
     </div>
   );
 }

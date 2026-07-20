@@ -104,18 +104,20 @@ export default function App() {
 
   return (
     <div className="app">
+      {/* Pride stripe, appearance 1 of 2: structural edge rail. */}
+      <div className="pride-rail" aria-hidden="true" />
+
       <header className="app-header">
         <div className="header-inner">
           <button
-            className="logo logo-btn"
+            className="logo-btn"
             onClick={() => { setStep('profile'); setMaxStep(0); setPersons([{ gender: '', orientation: '', ethnicity: [] }]); setWeights(DEFAULT_WEIGHTS); setTempPref(50); setTempMin(TEMP_MIN_OFF); setTempMax(TEMP_MAX_OFF); }}
             aria-label="Go to homepage"
           >
-            <span className="logo-icon">🌈</span>
-            <span className="logo-text">ThriveMap</span>
+            <span className="wordmark">ThriveMap</span>
           </button>
           <nav className="step-nav" aria-label="Steps">
-            {['Profile', 'Preferences', 'Results'].map((label, i) => (
+            {['Profile', 'Priorities', 'Results'].map((label, i) => (
               <button
                 key={label}
                 className={`step-btn ${i === stepIndex ? 'active' : ''} ${i < stepIndex ? 'done' : ''}`}
@@ -123,7 +125,7 @@ export default function App() {
                 disabled={i > maxStep}
                 aria-current={i === stepIndex ? 'step' : undefined}
               >
-                <span className="step-num">{i < stepIndex ? '✓' : i + 1}</span>
+                <span className="step-index">{String(i + 1).padStart(2, '0')}</span>
                 <span className="step-label">{label}</span>
               </button>
             ))}
@@ -173,6 +175,7 @@ export default function App() {
       </main>
 
       <footer className="app-footer">
+        <div className="footer-inner">
         <p>
           LGBTQ+: <a href="https://equaldex.com" target="_blank" rel="noreferrer">Equaldex</a>
           {equaldexDateLabel
@@ -193,7 +196,9 @@ export default function App() {
           {safetyStatus === 'loading' && <span className="badge loading-ind">● updating…</span>}
           {' · '}Scores are generalisations. Individual experiences vary.
         </p>
+        <p className="footer-saved">Nothing is saved. No account, no cookies, no tracking. Your answers never leave your browser.</p>
         <p className="footer-love">Made with ❤️ for everyone who deserves a place to thrive.</p>
+        </div>
       </footer>
     </div>
   );
