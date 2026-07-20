@@ -1,5 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GENDER_OPTIONS, ORIENTATION_OPTIONS, ETHNICITY_OPTIONS } from '../data/countries';
+
+// "free" leads deliberately: it is the word rendered statically in the
+// index.html prerender, the og-image, and whenever reduced motion is requested,
+// so it is what crawlers and non-animating visitors actually see.
+const HEADLINE_WORDS = ['free', 'open', 'honest', 'relaxed', 'unguarded', 'loud', 'visible', 'respected'];
+
+/**
+ * Cycles one word inside the headline.
+ *
+ * The visible rotation is aria-hidden and paired with a visually hidden static
+ * sentence listing every word, so screen readers get one coherent sentence
+ * instead of a word that mutates under them. Keying the span on the word itself
+ * remounts it, which replays the entry animation.
+ */
+function RotatingWord({ words, intervalMs = 2200 }) {
+  const [i, setI] = useState(0);
+
+  useEffect(() => {
+    // Rotation is motion: hold on the first word when reduced motion is requested.
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    const id = setInterval(() => setI(n => (n + 1) % words.length), intervalMs);
+    return () => clearInterval(id);
+  }, [words.length, intervalMs]);
+
+  return (
+    <span className="rotator">
+      <span key={words[i]} className="rot-word">{words[i]}</span>
+    </span>
+  );
+}
 
 function PersonCard({ person, index, onChange }) {
   const label = index === 0 ? 'Person 1' : 'Person 2';
@@ -96,7 +126,15 @@ export default function ProfileSetup({ persons, onNext }) {
   return (
     <div className="step-container">
       <div className="step-hero">
-        <h1 className="step-title">Live where you can be open about who you are.</h1>
+        <h1 className="step-title">
+          <span className="sr-only">
+            Live where you can be free, open, honest, relaxed, unguarded, loud,
+            visible and respected about who you are.
+          </span>
+          <span aria-hidden="true">
+            Live where you can be <RotatingWord words={HEADLINE_WORDS} /> about who you are.
+          </span>
+        </h1>
         <p className="step-subtitle">
           77 countries. Nine dimensions. Ranked for you. Nothing is saved: no account,
           no cookies, no tracking. Your answers never leave your browser.
