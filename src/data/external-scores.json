@@ -6,7 +6,7 @@
     "healthcare_count": 0,
     "note": "Populated automatically each July by .github/workflows/update-external-scores.yml",
     "equaldex_count": 77,
-    "equaldex_updated": "2026-08-24T02:58:52Z"
+    "equaldex_updated": "2026-08-31T08:02:33Z"
   },
   "gpi": {},
   "rainbow": {},
@@ -108,8 +108,8 @@
       "lgbtq_social": 53.68
     },
     "CU": {
-      "ei": 76.8,
-      "lgbtq_orient": 87.2,
+      "ei": 76.2,
+      "lgbtq_orient": 86,
       "lgbtq_social": 66.4
     },
     "CV": {
@@ -138,13 +138,13 @@
       "lgbtq_social": 69.39
     },
     "EC": {
-      "ei": 65.69,
-      "lgbtq_orient": 89.58,
+      "ei": 63.9,
+      "lgbtq_orient": 86,
       "lgbtq_social": 41.79
     },
     "EE": {
-      "ei": 58.72,
-      "lgbtq_orient": 73.6,
+      "ei": 58.12,
+      "lgbtq_orient": 72.4,
       "lgbtq_social": 43.84
     },
     "ES": {
@@ -168,8 +168,8 @@
       "lgbtq_social": 58.33
     },
     "GB": {
-      "ei": 66.65,
-      "lgbtq_orient": 78.75,
+      "ei": 66.54,
+      "lgbtq_orient": 78.54,
       "lgbtq_social": 54.54
     },
     "GR": {
@@ -183,8 +183,8 @@
       "lgbtq_social": 33.5
     },
     "HU": {
-      "ei": 49.37,
-      "lgbtq_orient": 58.8,
+      "ei": 48.97,
+      "lgbtq_orient": 58,
       "lgbtq_social": 39.95
     },
     "IE": {
@@ -253,8 +253,8 @@
       "lgbtq_social": 35.43
     },
     "MK": {
-      "ei": 49.09,
-      "lgbtq_orient": 65.42,
+      "ei": 49.38,
+      "lgbtq_orient": 66,
       "lgbtq_social": 32.77
     },
     "MT": {
@@ -263,8 +263,8 @@
       "lgbtq_social": 60.61
     },
     "MX": {
-      "ei": 70.63,
-      "lgbtq_orient": 84.62,
+      "ei": 71.16,
+      "lgbtq_orient": 85.67,
       "lgbtq_social": 56.64
     },
     "MZ": {
@@ -328,8 +328,8 @@
       "lgbtq_social": 33.18
     },
     "SC": {
-      "ei": 60.91,
-      "lgbtq_orient": 55.42,
+      "ei": 61.4,
+      "lgbtq_orient": 56.4,
       "lgbtq_social": 66.4
     },
     "SE": {
@@ -343,8 +343,8 @@
       "lgbtq_social": 48.73
     },
     "SI": {
-      "ei": 65.05,
-      "lgbtq_orient": 81.6,
+      "ei": 64.45,
+      "lgbtq_orient": 80.4,
       "lgbtq_social": 48.5
     },
     "SK": {
@@ -353,8 +353,8 @@
       "lgbtq_social": 33.46
     },
     "SM": {
-      "ei": 66.75,
-      "lgbtq_orient": 62.5,
+      "ei": 67.1,
+      "lgbtq_orient": 63.2,
       "lgbtq_social": 71
     },
     "SR": {
@@ -378,8 +378,8 @@
       "lgbtq_social": 38.67
     },
     "US": {
-      "ei": 63.51,
-      "lgbtq_orient": 71.43,
+      "ei": 65.51,
+      "lgbtq_orient": 75.42,
       "lgbtq_social": 55.59
     },
     "UY": {
