@@ -6,7 +6,7 @@
     "healthcare_count": 0,
     "note": "Populated automatically each July by .github/workflows/update-external-scores.yml",
     "equaldex_count": 77,
-    "equaldex_updated": "2026-09-14T07:30:36Z"
+    "equaldex_updated": "2026-09-21T07:34:20Z"
   },
   "gpi": {},
   "rainbow": {},
@@ -63,8 +63,8 @@
       "lgbtq_social": 38.42
     },
     "BR": {
-      "ei": 74.81,
-      "lgbtq_orient": 93.53,
+      "ei": 74.87,
+      "lgbtq_orient": 93.66,
       "lgbtq_social": 56.09
     },
     "BW": {
@@ -108,8 +108,8 @@
       "lgbtq_social": 53.68
     },
     "CU": {
-      "ei": 76.2,
-      "lgbtq_orient": 86,
+      "ei": 78.6,
+      "lgbtq_orient": 90.8,
       "lgbtq_social": 66.4
     },
     "CV": {
@@ -223,8 +223,8 @@
       "lgbtq_social": 50.75
     },
     "KR": {
-      "ei": 43.63,
-      "lgbtq_orient": 48.57,
+      "ei": 43.26,
+      "lgbtq_orient": 47.83,
       "lgbtq_social": 38.69
     },
     "LA": {
@@ -293,8 +293,8 @@
       "lgbtq_social": 67.76
     },
     "NZ": {
-      "ei": 78.3,
-      "lgbtq_orient": 91.2,
+      "ei": 80.3,
+      "lgbtq_orient": 95.2,
       "lgbtq_social": 65.39
     },
     "PE": {
@@ -378,8 +378,8 @@
       "lgbtq_social": 38.67
     },
     "US": {
-      "ei": 65.48,
-      "lgbtq_orient": 75.37,
+      "ei": 65.5,
+      "lgbtq_orient": 75.4,
       "lgbtq_social": 55.59
     },
     "UY": {
