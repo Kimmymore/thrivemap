@@ -6,7 +6,7 @@
     "healthcare_count": 0,
     "note": "Populated automatically each July by .github/workflows/update-external-scores.yml",
     "equaldex_count": 77,
-    "equaldex_updated": "2026-11-09T09:01:29Z"
+    "equaldex_updated": "2026-11-16T08:57:15Z"
   },
   "gpi": {},
   "rainbow": {},
@@ -378,8 +378,8 @@
       "lgbtq_social": 38.67
     },
     "US": {
-      "ei": 65.5,
-      "lgbtq_orient": 75.4,
+      "ei": 65.85,
+      "lgbtq_orient": 76.1,
       "lgbtq_social": 55.59
     },
     "UY": {
